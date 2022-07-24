@@ -11,10 +11,10 @@ public class TeamMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Team team;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private UserInfo userInfo;
 
     @Column(name = "role")

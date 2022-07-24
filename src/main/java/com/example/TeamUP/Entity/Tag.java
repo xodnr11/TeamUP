@@ -12,7 +12,7 @@ public class Tag {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Team team;
 
     @Column(name = "tag_name")
