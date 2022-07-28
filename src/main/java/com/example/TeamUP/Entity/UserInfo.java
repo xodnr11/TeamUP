@@ -1,26 +1,23 @@
 package com.example.TeamUP.Entity;
 
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
-public class UserInfo implements UserDetails {
+public class UserInfo {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
+    private String oauth2id;
+
     @Column
-    private char gender;
+    private String gender;
 
     @Column
     private String nickname;
@@ -35,12 +32,27 @@ public class UserInfo implements UserDetails {
     private String phone;
 
     @Column
-    private Date birthday;
+    private String birthday;
 
-    @Column
-    private String authority;
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
 
+    public UserInfo(String oauth2id, String gender, String nickname, String email, String name, String phone, String birthday, Role role) {
+        this.oauth2id = oauth2id;
+        this.gender = gender;
+        this.nickname = nickname;
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
+        this.birthday = birthday;
+        this.role = role;
+    }
 
+    public UserInfo() {
+    }
+
+    /*
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();
@@ -78,5 +90,5 @@ public class UserInfo implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }  //계정이 활성화 되었는지
+    }  //계정이 활성화 되었는지*/
 }
