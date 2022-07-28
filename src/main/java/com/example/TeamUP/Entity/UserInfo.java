@@ -1,13 +1,14 @@
 package com.example.TeamUP.Entity;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
 public class UserInfo {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +18,7 @@ public class UserInfo {
     private String oauth2id;
 
     @Column
-    private String gender;
+    private char gender;
 
     @Column
     private String nickname;
@@ -32,13 +33,14 @@ public class UserInfo {
     private String phone;
 
     @Column
-    private String birthday;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")     //Date 형식 지정
+    private Date birthday;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public UserInfo(String oauth2id, String gender, String nickname, String email, String name, String phone, String birthday, Role role) {
+    public UserInfo(String oauth2id, char gender, String nickname, String email, String name, String phone, Date birthday, Role role) {
         this.oauth2id = oauth2id;
         this.gender = gender;
         this.nickname = nickname;
