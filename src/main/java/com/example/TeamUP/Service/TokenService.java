@@ -5,15 +5,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @Service
 public class TokenService {
-    private String secretKey = "token-secret-key";
+    private String secretKey = "secret-key";              //복호화에 필요한 토큰 키
 
     @PostConstruct
     protected void init() {
@@ -21,10 +23,10 @@ public class TokenService {
     }
 
     public Token generateToken(String uid, String role) {
-        long tokenPeriod = 1000L * 60L * 10L;
-        long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
+        long tokenPeriod = 1000L * 60L * 1L;                   //1분
+        long refreshPeriod = 1000L * 60L * 60L * 24L * 30L;     //1달
 
-        Claims claims = Jwts.claims().setSubject(uid);
+        Claims claims = Jwts.claims().setSubject(uid);          //sub, role key 만들어서 토큰 payload에 저장
         claims.put("role", role);
 
         Date now = new Date();
@@ -52,6 +54,8 @@ public class TokenService {
                     .getExpiration()
                     .after(new Date());
         } catch (Exception e) {
+            log.info("토큰 만료 작동 확인");
+            e.printStackTrace();
             return false;
         }
     }

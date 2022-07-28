@@ -18,6 +18,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends GenericFilterBean {
@@ -43,11 +44,12 @@ public class JwtAuthFilter extends GenericFilterBean {
                     .name("이름이에용")
                     .build();
 
-            log.info("언제 실행되는지 확인 :"+token);
-
             Authentication auth = getAuthentication(userDto);
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            log.info("doFilter 실행 여부 확인");
         }
+
 
         chain.doFilter(request, response);
     }

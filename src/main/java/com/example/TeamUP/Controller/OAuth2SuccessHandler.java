@@ -35,7 +35,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         UserDto userDto = userRequestMapper.toDto(oAuth2User);                                      //UserRequestMapper로 유저정보 저장
 
-
         // 최초 로그인이라면 회원가입 처리를 한다.
         if (!userRepository.existsByOauth2id(userDto.getId())) {
             Role role = Role.USER;                                                                  //유저 역할 enum
@@ -56,7 +55,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         }
 
 //        log.info("sns_id : " + userDto.getId());
-        Token token = tokenService.generateToken(userDto.getEmail(), "USER");                   //토큰 생성
+        Token token = tokenService.generateToken(userDto.getId(), "USER");                   //토큰 생성
         log.info("{}", token);                                                                       //토큰 값 확인
 
         writeTokenResponse(response, token);                                                         //토큰 전달(?)
@@ -66,7 +65,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             throws IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        response.addHeader("Auth", token.getToken());
+        response.addHeader("Auth", ""+token.getToken());                            //토큰약속 문자열 포함 해야함
         response.addHeader("Refresh", token.getRefreshToken());
         response.setContentType("application/json;charset=UTF-8");
 
