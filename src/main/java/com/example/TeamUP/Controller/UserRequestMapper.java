@@ -10,7 +10,7 @@ public class UserRequestMapper {
     public UserDto toDto(OAuth2User oAuth2User) {
         var attributes = oAuth2User.getAttributes();
         UserDto userDto = UserDto.builder()
-                .id((String)attributes.get("sns_id"))
+                .id((String)attributes.get("id"))
                 .nickname((String)attributes.get("nickname"))
                 .birthday((String)attributes.get("birthday"))
                 .birthyear((String)attributes.get("birthyear"))
@@ -28,5 +28,4 @@ public class UserRequestMapper {
         return new UserFindRequest(userDto.getEmail());
     }
 */
-
 }

@@ -33,16 +33,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2Attribute oAuth2Attribute =
                 OAuth2Attribute.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
+        //Oauth 회원정보 확인 객체
         log.info("{}", oAuth2Attribute);
 
+        //파싱해서 memberAttribute Map에 담기
         var memberAttribute = oAuth2Attribute.convertToMap();
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                memberAttribute, "email");
+                memberAttribute, "id");
     }
 }
 
+@Slf4j
 @ToString
 @Builder(access = AccessLevel.PRIVATE)
 @Getter
@@ -66,10 +69,44 @@ class OAuth2Attribute {
             case "kakao":
                 return ofKakao("email", attributes);
             case "naver":
-                return ofNaver("id", attributes);
+                return ofNaver(attributes);
             default:
                 throw new RuntimeException();
         }
+    }
+
+    private static OAuth2Attribute ofNaver(Map<String, Object> attributes) {
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+//        log.info("attributeKey값 확왼 : " + attributeKey);
+        return OAuth2Attribute.builder()
+                .id((String) response.get("id"))
+                .nickname((String) response.get("nickname"))
+                .gender((String) response.get("gender"))
+                .mobile((String) response.get("mobile"))
+                .birthday((String) response.get("birthday"))
+                .birthyear((String) response.get("birthyear"))
+                .name((String) response.get("name"))
+                .email((String) response.get("email"))
+                .attributeKey((String) response.get("id"))
+                .attributes(response)
+                .build();
+    }
+
+    Map<String, Object> convertToMap() {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("key", attributeKey);
+        map.put("id", id);
+        map.put("nickname", nickname);
+        map.put("gender", gender);
+        map.put("mobile", mobile);
+        map.put("birthday", birthday);
+        map.put("birthyear", birthyear);
+        map.put("name", name);
+        map.put("email", email);
+
+        return map;
     }
 
     private static OAuth2Attribute ofGoogle(String attributeKey,
@@ -99,40 +136,5 @@ class OAuth2Attribute {
                 .attributes(kakaoAccount)
                 .attributeKey(attributeKey)
                 .build();
-    }
-
-    private static OAuth2Attribute ofNaver(String attributeKey,
-                                           Map<String, Object> attributes) {
-        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-
-        return OAuth2Attribute.builder()
-                .id((String) response.get("id"))
-                .nickname((String) response.get("nickname"))
-                .gender((String) response.get("gender"))
-                .mobile((String) response.get("mobile"))
-                .birthday((String) response.get("birthday"))
-                .birthyear((String) response.get("birthyear"))
-                .name((String) response.get("name"))
-                .email((String) response.get("email"))
-                .attributes(response)
-                .attributeKey(attributeKey)
-                .build();
-    }
-
-    Map<String, Object> convertToMap() {
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("id", attributeKey);
-        map.put("key", attributeKey);
-        map.put("sns_id", id);
-        map.put("nickname", nickname);
-        map.put("gender", gender);
-        map.put("mobile", mobile);
-        map.put("birthday", birthday);
-        map.put("birthyear", birthyear);
-        map.put("name", name);
-        map.put("email", email);
-
-        return map;
     }
 }

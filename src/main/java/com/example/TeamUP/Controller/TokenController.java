@@ -5,7 +5,6 @@ import com.example.TeamUP.Service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,8 +25,8 @@ public class TokenController {
         String token = request.getHeader("Refresh");
 
         if (token != null && tokenService.verifyToken(token)) {
-            String email = tokenService.getUid(token);
-            Token newToken = tokenService.generateToken(email, "USER");
+            Long uid = Long.valueOf(tokenService.getUid(token));
+            Token newToken = tokenService.generateToken(uid, "USER");
 
             response.addHeader("Auth", newToken.getToken());
             response.addHeader("Refresh", newToken.getRefreshToken());

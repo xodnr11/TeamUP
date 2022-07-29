@@ -1,10 +1,7 @@
 package com.example.TeamUP.Service;
 
 import com.example.TeamUP.Config.Token;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +19,24 @@ public class TokenService {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public Token generateToken(String uid, String role) {
-        long tokenPeriod = 1000L * 60L * 1L;                   //1분
+    public Token generateToken(Long uid, String role) {
+//        long tokenPeriod = 1000L * 60L * 1L;                   //1분
+        long tokenPeriod = 1000L * 30L;                   //1초
         long refreshPeriod = 1000L * 60L * 60L * 24L * 30L;     //1달
 
-        Claims claims = Jwts.claims().setSubject(uid);          //sub, role key 만들어서 토큰 payload에 저장
-        claims.put("role", role);
-
+        Claims accessClaims = Jwts.claims().setSubject("userInformation").setAudience(String.valueOf(uid));          //sub, role key 만들어서 토큰 payload에 저장
+        accessClaims.put("role", role);
+        Claims refreshClaims = Jwts.claims().setIssuer("admin");
         Date now = new Date();
         return new Token(
                 Jwts.builder()
-                        .setClaims(claims)
+                        .setClaims(accessClaims)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + tokenPeriod))
                         .signWith(SignatureAlgorithm.HS256, secretKey)
                         .compact(),
                 Jwts.builder()
-                        .setClaims(claims)
+                        .setClaims(refreshClaims)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + refreshPeriod))
                         .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -53,14 +51,14 @@ public class TokenService {
             return claims.getBody()
                     .getExpiration()
                     .after(new Date());
-        } catch (Exception e) {
+        } catch (ExpiredJwtException e) {//토큰 만료 캐치문
             log.info("토큰 만료 작동 확인");
-            e.printStackTrace();
             return false;
+//            throw new JwtException("토큰 기한 만료");
         }
     }
 
     public String getUid(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getAudience();        //getAudience로 대상자 이름 가져오기
     }
 }

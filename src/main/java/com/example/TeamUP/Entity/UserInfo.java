@@ -1,5 +1,6 @@
 package com.example.TeamUP.Entity;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -40,6 +41,7 @@ public class UserInfo {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @Builder
     public UserInfo(String oauth2id, char gender, String nickname, String email, String name, String phone, Date birthday, Role role) {
         this.oauth2id = oauth2id;
         this.gender = gender;

@@ -7,5 +7,7 @@ public interface UserRepository extends JpaRepository<UserInfo, Long> {
 
     Boolean existsByOauth2id(String oauthid);
 
+    UserInfo findByOauth2id(String oauthid);
+
     UserInfo save(UserInfo userInfo);
 }
