@@ -63,10 +63,12 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         }else {
             //유저 정보 업데이트 필요
         }
+        userInfo = userRepository.findByOauth2id(nameValidation);
 
         Authentication auth = getAuthentication(userInfo);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
+        log.info("유저인포 겟 아이디 확인 :" + userInfo.getId());
         Token token = tokenService.generateToken(userInfo.getId(), "USER");                   //토큰 생성
         log.info("{}", token);                                                                       //토큰 값 확인
 

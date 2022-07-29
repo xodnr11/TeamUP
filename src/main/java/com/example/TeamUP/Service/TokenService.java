@@ -24,6 +24,7 @@ public class TokenService {
         long tokenPeriod = 1000L * 30L;                   //1초
         long refreshPeriod = 1000L * 60L * 60L * 24L * 30L;     //1달
 
+        log.info("uid값 확인 : "+uid);
         Claims accessClaims = Jwts.claims().setSubject("userInformation").setAudience(String.valueOf(uid));          //sub, role key 만들어서 토큰 payload에 저장
         accessClaims.put("role", role);
         Claims refreshClaims = Jwts.claims().setIssuer("admin");
