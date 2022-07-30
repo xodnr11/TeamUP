@@ -1,140 +1,79 @@
 package com.example.TeamUP.Service;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import com.example.TeamUP.Auth.OAuth.KakaoUserInfo;
+import com.example.TeamUP.Auth.OAuth.NaverUserInfo;
+import com.example.TeamUP.Auth.OAuth.OAuth2UserInfo;
+import com.example.TeamUP.Auth.PrincipalDetails;
+import com.example.TeamUP.Entity.Role;
+import com.example.TeamUP.Entity.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
 
 @Slf4j
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {            //OAuth2를 통해 회원정보 불러오기
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+        OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        OAuth2UserInfo oAuth2UserInfo = null;
 
-        OAuth2Attribute oAuth2Attribute =
-                OAuth2Attribute.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
-
-        //Oauth 회원정보 확인 객체
-        log.info("{}", oAuth2Attribute);
-
-        //파싱해서 memberAttribute Map에 담기
-        var memberAttribute = oAuth2Attribute.convertToMap();
-
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                memberAttribute, "id");
-    }
-}
-
-@Slf4j
-@ToString
-@Builder(access = AccessLevel.PRIVATE)
-@Getter
-class OAuth2Attribute {
-    private Map<String, Object> attributes;
-    private String attributeKey;
-    private String id;
-    private String nickname;
-    private String gender;
-    private String mobile;
-    private String birthday;
-    private String birthyear;
-    private String email;
-    private String name;
-
-    static OAuth2Attribute of(String provider, String attributeKey,
-                              Map<String, Object> attributes) {
-        switch (provider) {
-            case "google":
-                return ofGoogle(attributeKey, attributes);
-            case "kakao":
-                return ofKakao("email", attributes);
-            case "naver":
-                return ofNaver(attributes);
-            default:
-                throw new RuntimeException();
+        if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            oAuth2UserInfo = new NaverUserInfo((Map<String, Object>) oAuth2User.getAttributes().get("response"));
+            log.info("오스 전체 값 확인 " + oAuth2UserInfo.toString());
+            log.info("네이버 로그인 중");
+        } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
+        } else {
+            log.info("이게 작동 ?");
         }
-    }
 
-    private static OAuth2Attribute ofNaver(Map<String, Object> attributes) {
-        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        UserInfo userInfo = new UserInfo();
 
-//        log.info("attributeKey값 확왼 : " + attributeKey);
-        return OAuth2Attribute.builder()
-                .id((String) response.get("id"))
-                .nickname((String) response.get("nickname"))
-                .gender((String) response.get("gender"))
-                .mobile((String) response.get("mobile"))
-                .birthday((String) response.get("birthday"))
-                .birthyear((String) response.get("birthyear"))
-                .name((String) response.get("name"))
-                .email((String) response.get("email"))
-                .attributeKey((String) response.get("id"))
-                .attributes(response)
+        log.info("겟 젠더 확인 "+oAuth2UserInfo.getGender());
+
+        //소셜 로그인에서 제공하는 id값 호출
+        String nameValidation = oAuth2UserInfo.getProviderId();
+        String socialName = oAuth2UserInfo.getProvider();
+        log.info("authentication principal getName() 값 확인 : " + nameValidation);
+        String username = socialName + nameValidation;
+        char gender = oAuth2UserInfo.getGender().charAt(0);                                            //젠더 문자형으로 변환
+        //태어난 년과 생일을 합침
+        String birth = oAuth2UserInfo.getBirthyear()+"-"+oAuth2UserInfo.getBirthday();
+        String nickname = oAuth2UserInfo.getNickname();
+        String email = oAuth2UserInfo.getEmail();
+        String name = oAuth2UserInfo.getName();
+        String phone = oAuth2UserInfo.getPhone();
+
+        Role role = Role.USER;                                                                  //유저 역할 enum
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");                //날짜 날짜 형식 지정
+        Date BirthYearAddbirthDay = null;
+        try {
+            BirthYearAddbirthDay = formatter.parse(birth);                       //날짜 형식으로 변환
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        userInfo = new UserInfo(username, gender, nickname,
+                email, name, phone, BirthYearAddbirthDay, role);
+
+        //네이버 카카오 구분해서 객체가 생길거아냐 ? - > 석세스로 보내 거기서 회원가입하고 토큰 만드는거지(로그인)
+        return PrincipalDetails.builder()
+                .userInfo(userInfo)
+                .oAuth2UserInfo(oAuth2UserInfo)
                 .build();
     }
 
-    Map<String, Object> convertToMap() {
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("key", attributeKey);
-        map.put("id", id);
-        map.put("nickname", nickname);
-        map.put("gender", gender);
-        map.put("mobile", mobile);
-        map.put("birthday", birthday);
-        map.put("birthyear", birthyear);
-        map.put("name", name);
-        map.put("email", email);
-
-        return map;
-    }
-
-    private static OAuth2Attribute ofGoogle(String attributeKey,
-                                            Map<String, Object> attributes) {
-        return OAuth2Attribute.builder()
-                .id((String) attributes.get("id"))
-                .nickname((String) attributes.get("nickname"))
-                .gender((String) attributes.get("gender"))
-                .mobile((String) attributes.get("mobile"))
-                .birthday((String) attributes.get("birthday"))
-                .birthyear((String) attributes.get("birthyear"))
-                .name((String) attributes.get("name"))
-                .email((String) attributes.get("email"))
-                .attributes(attributes)
-                .attributeKey(attributeKey)
-                .build();
-    }
-
-    private static OAuth2Attribute ofKakao(String attributeKey,
-                                           Map<String, Object> attributes) {
-        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
-
-        return OAuth2Attribute.builder()
-                .name((String) kakaoProfile.get("nickname"))
-                .email((String) kakaoAccount.get("email"))
-                .attributes(kakaoAccount)
-                .attributeKey(attributeKey)
-                .build();
-    }
 }

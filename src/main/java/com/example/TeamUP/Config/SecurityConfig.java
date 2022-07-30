@@ -35,9 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .oauth2Login()
-                .loginPage("/login")
-                .successHandler(successHandler)
-                .userInfoEndpoint().userService(oAuth2UserService);
+                    .loginPage("/login")
+                    .successHandler(successHandler)
+                    .userInfoEndpoint().userService(oAuth2UserService);
 
         http.addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
     }

@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserInfo, Long> {
 
-    Boolean existsByOauth2id(String oauthid);
+    Boolean existsByUsername(String username);
 
-    UserInfo findByOauth2id(String oauthid);
+    UserInfo findByUsername(String username);
 
     UserInfo save(UserInfo userInfo);
 }

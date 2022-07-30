@@ -16,7 +16,7 @@ public class UserInfo {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String oauth2id;
+    private String username;
 
     @Column
     private char gender;
@@ -42,8 +42,8 @@ public class UserInfo {
     private Role role;
 
     @Builder
-    public UserInfo(String oauth2id, char gender, String nickname, String email, String name, String phone, Date birthday, Role role) {
-        this.oauth2id = oauth2id;
+    public UserInfo(String username, char gender, String nickname, String email, String name, String phone, Date birthday, Role role) {
+        this.username = username;
         this.gender = gender;
         this.nickname = nickname;
         this.email = email;
