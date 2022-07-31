@@ -21,17 +21,17 @@ public class JwtAuthFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = ((HttpServletRequest)request).getHeader("Auth");
-
-        //토큰이 만료 되었을 때
-        if (token != null && !tokenService.verifyToken(token)) {
-            ((HttpServletResponse) response).sendError(401, "Expired Token !!!");
-//            ((HttpServletResponse) response).sendRedirect("index.html");
+        if ("/token/refresh".equals(((HttpServletRequest) request).getRequestURI())) {
+            chain.doFilter(request, response);
+            return ;
+        } else if (token != null && !tokenService.verifyToken(token)) {        //토큰이 만료 되었을 때
             log.info("토큰 만료 실행 확인");
+//            ((HttpServletResponse) response).sendError(401, "Expired Token !!!");
+            ((HttpServletResponse) response).sendRedirect("/token/refresh");
+        } else if (token == null) {
+            chain.doFilter(request,response);
+            return ;
         }
-
-
         chain.doFilter(request, response);
     }
-
-
 }

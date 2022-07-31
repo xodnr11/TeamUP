@@ -65,8 +65,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             e.printStackTrace();
         }
 
-        UserInfo userInfo = new UserInfo(username, gender, nickname,
-                email, name, phone, BirthYearAddbirthDay, role);
+        UserInfo userInfo = UserInfo.builder()
+                .username(username)
+                .gender(gender)
+                .nickname(nickname)
+                .email(email)
+                .name(name)
+                .phone(phone)
+                .birthday(BirthYearAddbirthDay)
+                .role(role)
+                .build();
 
         return PrincipalDetails.builder()
                 .userInfo(userInfo)

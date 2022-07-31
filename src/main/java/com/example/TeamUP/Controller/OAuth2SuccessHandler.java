@@ -35,30 +35,31 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
-
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-
         String username = principalDetails.getUserInfo().getUsername();
 
-        // 최초 로그인이라면 회원가입 처리를 한다.
-        if (!userRepository.existsByUsername(username)) {
-            userRepository.save(principalDetails.getUserInfo());                                     //유저인포 테이블 저장
-        }else {
-            //유저 정보 업데이트 필요
+        UserInfo userInfo = userRepository.findByUsername(username);
+        log.info("유저인포 값 확인 : " + userInfo);
+
+        if (userInfo == null) {
+            userRepository.save(principalDetails.getUserInfo());                            // 최초 로그인이라면 회원가입 처리를 한다.
+            userInfo = userRepository.findByUsername(username);
         }
 
         principalDetails = PrincipalDetails
                 .builder()
-                .userInfo(userRepository.findByUsername(username))
+                .userInfo(userInfo)
                 .build();
 
         Authentication auth = getAuthentication(principalDetails);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContextHolder.getContext().setAuthentication(auth);                     //@Authentication에 저장
 
         log.info("유저인포 겟 아이디 확인 :" + principalDetails.getUserInfo().getUsername());
         Token token = tokenService.generateToken(principalDetails.getUserInfo().getId(), "USER");                   //토큰 생성
         log.info("{}", token);                                                                       //토큰 값 확인
-
+        userInfo.setRefreshtoken(token.getRefreshToken());                                          //리프레쉬 토큰 유저정보 저장
+        log.info("업데이트 전 유저인포 값 확인 : " + userInfo);
+        userRepository.save(userInfo);                                                              //유저정보 리프레쉬 토큰 포함 업데이트
         writeTokenResponse(response, token);                                                         //토큰 전달(?)
     }
 
@@ -70,13 +71,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader("Refresh", token.getRefreshToken());
         response.setContentType("application/json;charset=UTF-8");
 
-        var writer = response.getWriter();
-        writer.println(objectMapper.writeValueAsString(token));
-        writer.flush();
+        response.sendRedirect("/");
     }
 
-    //Authentication 객체에 담아서 자체적으로 전역으로 불러올 수 있도록 담음
-    public Authentication getAuthentication(PrincipalDetails member) {
+    public Authentication getAuthentication(PrincipalDetails member) {    //Authentication 객체에 담아서 자체적으로 전역으로 불러올 수 있도록 담음
         return new UsernamePasswordAuthenticationToken(member, "",
                 Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
     }

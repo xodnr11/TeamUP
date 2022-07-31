@@ -30,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/oauth2/**").permitAll()      //이거 빼고는
+
 //                .anyRequest().authenticated()                           //토큰을 필요로 한다
                 .anyRequest().permitAll()
                 .and()
