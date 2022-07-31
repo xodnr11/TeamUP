@@ -24,7 +24,8 @@ public class JwtAuthFilter extends GenericFilterBean {
 
         //토큰이 만료 되었을 때
         if (token != null && !tokenService.verifyToken(token)) {
-            ((HttpServletResponse)response).sendError(401,"Expired Token !!!");
+            ((HttpServletResponse) response).sendError(401, "Expired Token !!!");
+//            ((HttpServletResponse) response).sendRedirect("index.html");
             log.info("토큰 만료 실행 확인");
         }
 

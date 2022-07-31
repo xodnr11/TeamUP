@@ -32,33 +32,32 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
             oAuth2UserInfo = new NaverUserInfo((Map<String, Object>) oAuth2User.getAttributes().get("response"));
-            log.info("오스 전체 값 확인 " + oAuth2UserInfo.toString());
+            log.info("네이버 오스 전체 값 확인 " + oAuth2UserInfo.toString());
             log.info("네이버 로그인 중");
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
             oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
+            log.info("카카오 오스 전체 값 확인 " + oAuth2UserInfo.toString());
+            log.info("카카오 로그인 중");
         } else {
             log.info("이게 작동 ?");
         }
 
-        UserInfo userInfo = new UserInfo();
-
         log.info("겟 젠더 확인 "+oAuth2UserInfo.getGender());
 
-        //소셜 로그인에서 제공하는 id값 호출
+        //소셜 로그인에서 제공하는 회원정보 파싱
         String nameValidation = oAuth2UserInfo.getProviderId();
         String socialName = oAuth2UserInfo.getProvider();
         log.info("authentication principal getName() 값 확인 : " + nameValidation);
-        String username = socialName + nameValidation;
+        String username = socialName+"_"+nameValidation;
         char gender = oAuth2UserInfo.getGender().charAt(0);                                            //젠더 문자형으로 변환
-        //태어난 년과 생일을 합침
-        String birth = oAuth2UserInfo.getBirthyear()+"-"+oAuth2UserInfo.getBirthday();
+        String birth = oAuth2UserInfo.getBirthyear()+"-"+oAuth2UserInfo.getBirthday();                  //태어난 년과 생일을 합침
         String nickname = oAuth2UserInfo.getNickname();
         String email = oAuth2UserInfo.getEmail();
         String name = oAuth2UserInfo.getName();
         String phone = oAuth2UserInfo.getPhone();
+        Role role = Role.USER;                                                                          //유저 역할 enum
 
-        Role role = Role.USER;                                                                  //유저 역할 enum
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");                //날짜 날짜 형식 지정
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");                        //날짜 날짜 형식 지정
         Date BirthYearAddbirthDay = null;
         try {
             BirthYearAddbirthDay = formatter.parse(birth);                       //날짜 형식으로 변환
@@ -66,10 +65,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             e.printStackTrace();
         }
 
-        userInfo = new UserInfo(username, gender, nickname,
+        UserInfo userInfo = new UserInfo(username, gender, nickname,
                 email, name, phone, BirthYearAddbirthDay, role);
 
-        //네이버 카카오 구분해서 객체가 생길거아냐 ? - > 석세스로 보내 거기서 회원가입하고 토큰 만드는거지(로그인)
         return PrincipalDetails.builder()
                 .userInfo(userInfo)
                 .oAuth2UserInfo(oAuth2UserInfo)
