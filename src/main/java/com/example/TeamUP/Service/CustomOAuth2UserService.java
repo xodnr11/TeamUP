@@ -70,7 +70,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         return PrincipalDetails.builder()
                 .userInfo(userInfo)
-                .oAuth2UserInfo(oAuth2UserInfo)
                 .build();
     }
 

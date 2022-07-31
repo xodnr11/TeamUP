@@ -3,14 +3,15 @@ package com.example.TeamUP.Controller;
 import com.example.TeamUP.Config.Token;
 import com.example.TeamUP.Service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class TokenController {
     private final TokenService tokenService;
 
@@ -21,7 +22,7 @@ public class TokenController {
     }
 
     @GetMapping("/token/refresh")
-    public String refreshAuth(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> refreshAuth(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("Refresh");
 
         if (token != null && tokenService.verifyToken(token)) {
@@ -32,9 +33,7 @@ public class TokenController {
             response.addHeader("Refresh", newToken.getRefreshToken());
             response.setContentType("application/json;charset=UTF-8");
 
-            return "HAPPY NEW TOKEN";
         }
-
-        throw new RuntimeException();
+        return ResponseEntity.ok(token);
     }
 }

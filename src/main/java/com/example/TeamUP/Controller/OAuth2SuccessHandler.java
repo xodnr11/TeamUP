@@ -47,7 +47,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             //유저 정보 업데이트 필요
         }
 
-        principalDetails.setUserInfo(userRepository.findByUsername(username));
+        principalDetails = PrincipalDetails
+                .builder()
+                .userInfo(userRepository.findByUsername(username))
+                .build();
+
         Authentication auth = getAuthentication(principalDetails);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
