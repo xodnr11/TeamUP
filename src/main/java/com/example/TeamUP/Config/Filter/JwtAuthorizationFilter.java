@@ -32,9 +32,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String jwtHeader = request.getHeader("Authorization");
         System.out.println("jwtHeader: "+ jwtHeader);
-        if("/token/refresh".equals(request.getRequestURI())){
-            chain.doFilter(request,response);
-            return ;
+        if ("/token/refresh".equals(request.getRequestURI()) || "/login1".equals(request.getRequestURI())) {
+            chain.doFilter(request, response);
+            return;
         }
         //header가 있는지 확인
         if (jwtHeader == null || !jwtHeader.startsWith("Bearer")) {
@@ -44,6 +44,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String jwtToken = request.getHeader("Authorization").replace("Bearer ", "");
 
         if(jwtHeader!=null && !tokenService.verifyToken(jwtToken)){
+
             response.sendRedirect("/token/refresh");
         }else {
             System.out.println("서명이 정상적");

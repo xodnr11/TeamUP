@@ -23,10 +23,10 @@ public class TokenService {
     }
 
     public Token generateToken(Long uid, String role) {
-//        long tokenPeriod = 1000L * 60L * 1L;                   //1분
-        long tokenPeriod = 1000L * 60L * 1L;                   //1분
+        long tokenPeriod = 1000L * 60L * 30L;                   //30분
+//        long tokenPeriod = 1000L * 1L;                   //1초
         long refreshPeriod = 1000L * 60L * 60L * 24L * 30L;     //1달
-
+//        long refreshPeriod = 1000L * 1L;
         log.info("uid값 확인 : "+uid);
         Claims accessClaims = Jwts.claims().setSubject("userInformation").setAudience(String.valueOf(uid));          //sub, role key 만들어서 토큰 payload에 저장
         accessClaims.put("role", role);
@@ -42,12 +42,15 @@ public class TokenService {
                 JWT.create()
                         .withSubject("refreshToken")
                         .withExpiresAt(new Date(System.currentTimeMillis() + (refreshPeriod)))
+                        .withAudience(String.valueOf(uid))
                         .sign(Algorithm.HMAC512(secretKey)));
     }
 
     public boolean verifyToken(String token) {
         try {
-            return JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).getExpiresAt().after(new Date());
+            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).getExpiresAt().after(new Date());
+            log.info("토큰 만료 되지 않음");
+            return true;
         } catch (TokenExpiredException e) {//토큰 만료 캐치문
             log.info("토큰 만료 작동 확인");
             e.printStackTrace();
