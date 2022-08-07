@@ -7,17 +7,14 @@ import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
@@ -58,9 +55,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Role role = Role.USER;                                                                          //유저 역할 enum
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");                        //날짜 날짜 형식 지정
-        Date BirthYearAddbirthDay = null;
+        Date BirthYearAddBirthDay = null;
         try {
-            BirthYearAddbirthDay = formatter.parse(birth);                       //날짜 형식으로 변환
+            BirthYearAddBirthDay = formatter.parse(birth);                       //날짜 형식으로 변환
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -72,7 +69,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .email(email)
                 .name(name)
                 .phone(phone)
-                .birthday(BirthYearAddbirthDay)
+                .birthday(BirthYearAddBirthDay)
                 .role(role)
                 .build();
 

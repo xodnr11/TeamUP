@@ -1,22 +1,16 @@
 package com.example.TeamUP.Controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
-import org.springframework.http.RequestEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Slf4j
@@ -26,7 +20,7 @@ public class Controller {
     private String CLIENT_ID = "qhlli0LOvYNyZETvCNZc"; //애플리케이션 클라이언트 아이디값";
     private String CLI_SECRET = "t_tq8x9bmH"; //애플리케이션 클라이언트 시크릿값";
 
-    @GetMapping("/login")
+    @GetMapping("/login1")
     public String login() {
         return "oauth2login";
     }
@@ -99,12 +93,12 @@ public class Controller {
         }
 
         br.close();
-        log.info("리턴 값 확인 : "+ res.toString());
+        log.info("리턴 값 확인 : "+ res);
 
         Map<String, Object> parsedJson = new JSONParser(res.toString()).parseObject();
         log.info("제이슨 값 확인 : "+ parsedJson);
         String accessToken = parsedJson.get("access_token").toString();
-        acsees(accessToken);
+        access(accessToken);
         log.info("엑세스 토큰 값 확인 : "+ accessToken);
 
 
@@ -114,7 +108,7 @@ public class Controller {
         return "callback";
     }
 
-    public void acsees(String accessToken) throws IOException, ParseException {
+    public void access(String accessToken) throws IOException, ParseException {
         String apiURL1 = "https://openapi.naver.com/v1/nid/me";
         String headerStr = "Bearer " + accessToken; // Bearer 다음에 공백 추가
 
@@ -139,7 +133,7 @@ public class Controller {
         }
 
         br1.close();
-        log.info("리턴 값 확인 : "+ res1.toString());
+        log.info("리턴 값 확인 : "+ res1);
 
         Map<String, Object> parsedJson1 = new JSONParser(res1.toString()).parseObject();
         log.info("제이슨 값 확인 : "+ parsedJson1);

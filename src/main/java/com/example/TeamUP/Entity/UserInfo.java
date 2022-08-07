@@ -19,6 +19,9 @@ public class UserInfo {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column
     private char gender;
 
@@ -42,12 +45,14 @@ public class UserInfo {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+
     @Column
     private String refreshtoken;
 
     @Builder
-    public UserInfo(String username, char gender, String nickname, String email, String name, String phone, Date birthday, Role role, String refreshtoken) {
+    public UserInfo(String username,String password, char gender, String nickname, String email, String name, String phone, Date birthday, Role role, String refreshtoken) {
         this.username = username;
+        this.password = password;
         this.gender = gender;
         this.nickname = nickname;
         this.email = email;

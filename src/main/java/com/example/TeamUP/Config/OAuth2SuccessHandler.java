@@ -1,4 +1,4 @@
-package com.example.TeamUP.Controller;
+package com.example.TeamUP.Config;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Config.Token;
