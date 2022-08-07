@@ -1,5 +1,8 @@
 package com.example.TeamUP.Service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.TeamUP.Config.Token;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -21,45 +24,39 @@ public class TokenService {
 
     public Token generateToken(Long uid, String role) {
 //        long tokenPeriod = 1000L * 60L * 1L;                   //1분
-        long tokenPeriod = 1000L * 30L;                   //30초
+        long tokenPeriod = 1000L * 60L * 1L;                   //1분
         long refreshPeriod = 1000L * 60L * 60L * 24L * 30L;     //1달
 
         log.info("uid값 확인 : "+uid);
         Claims accessClaims = Jwts.claims().setSubject("userInformation").setAudience(String.valueOf(uid));          //sub, role key 만들어서 토큰 payload에 저장
         accessClaims.put("role", role);
         Claims refreshClaims = Jwts.claims().setIssuer("admin");
-        Date now = new Date();
+
+
         return new Token(
-                Jwts.builder()
-                        .setClaims(accessClaims)
-                        .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + tokenPeriod))
-                        .signWith(SignatureAlgorithm.HS256, secretKey)
-                        .compact(),
-                Jwts.builder()
-                        .setClaims(refreshClaims)
-                        .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + refreshPeriod))
-                        .signWith(SignatureAlgorithm.HS256, secretKey)
-                        .compact());
+                JWT.create()
+                        .withSubject("userInformation")
+                        .withExpiresAt(new Date(System.currentTimeMillis() + (tokenPeriod)))
+                        .withAudience(String.valueOf(uid))
+                        .sign(Algorithm.HMAC512(secretKey)),
+                JWT.create()
+                        .withSubject("refreshToken")
+                        .withExpiresAt(new Date(System.currentTimeMillis() + (refreshPeriod)))
+                        .sign(Algorithm.HMAC512(secretKey)));
     }
 
     public boolean verifyToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token);
-            return claims.getBody()
-                    .getExpiration()
-                    .after(new Date());
-        } catch (ExpiredJwtException e) {//토큰 만료 캐치문
+            return JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).getExpiresAt().after(new Date());
+        } catch (TokenExpiredException e) {//토큰 만료 캐치문
             log.info("토큰 만료 작동 확인");
+            e.printStackTrace();
             return false;
 //            throw new JwtException("토큰 기한 만료");
         }
     }
 
     public String getUid(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getAudience();        //getAudience로 대상자 이름 가져오기
+        return JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).getAudience().toString();        //getAudience로 대상자 이름 가져오기
     }
 }

@@ -47,6 +47,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         authorities.add(simpleGrantedAuthority);
         return authorities;
     }
+
     public Role getRole() {
         return userInfo.getRole();
     }

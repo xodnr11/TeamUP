@@ -3,7 +3,10 @@ package com.example.TeamUP.Config.Filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.TeamUP.Auth.PrincipalDetails;
+import com.example.TeamUP.Config.Token;
+import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
+import com.example.TeamUP.Service.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -31,11 +35,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             UserInfo user = objectMapper.readValue(request.getInputStream(), UserInfo.class);
-            System.out.println(user);
 
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-            System.out.println(authenticationToken);
+
             System.out.println(authenticationManager.authenticate(authenticationToken));
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             System.out.println("authentication : "+authentication);
@@ -56,14 +59,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
-        //hash 암호방식
-        String jwtToken = JWT.create()
-                .withSubject(principalDetails.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 10)))
-                .withClaim("id", principalDetails.getUserInfo().getId())
-                .withClaim("username", principalDetails.getUserInfo().getUsername())
-                .sign(Algorithm.HMAC512("cos"));
 
-        response.addHeader("Authorization", "Bearer " + jwtToken);
+        Token jwtToken = tokenService.generateToken(principalDetails.getUserInfo().getId(),"USER");
+
+
+        response.addHeader("Authorization", "Bearer " + jwtToken.getToken());
+        response.addHeader("Refresh", "Bearer "+jwtToken.getRefreshToken());
     }
 }

@@ -64,6 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         UserInfo userInfo = UserInfo.builder()
                 .username(username)
+                .password("random")
                 .gender(gender)
                 .nickname(nickname)
                 .email(email)

@@ -1,8 +1,6 @@
 package com.example.TeamUP.Config;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
-import com.example.TeamUP.Config.Token;
-import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
 import com.example.TeamUP.Service.TokenService;
@@ -19,8 +17,6 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -55,7 +51,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         SecurityContextHolder.getContext().setAuthentication(auth);                     //@Authentication에 저장
 
         log.info("유저인포 겟 아이디 확인 :" + principalDetails.getUserInfo().getUsername());
-        Token token = tokenService.generateToken(principalDetails.getUserInfo().getId(), "USER");                   //토큰 생성
+        Token token = tokenService.generateToken(principalDetails.getUserInfo().getId(), "ROLE_USER");                   //토큰 생성
         log.info("{}", token);                                                                       //토큰 값 확인
         userInfo.setRefreshtoken(token.getRefreshToken());                                          //리프레쉬 토큰 유저정보 저장
         log.info("업데이트 전 유저인포 값 확인 : " + userInfo);
@@ -67,10 +63,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             throws IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        response.addHeader("Auth", ""+token.getToken());                            //토큰약속 문자열 Bearer 포함 해야함
-        response.addHeader("Refresh", token.getRefreshToken());
+        response.addHeader("Authorization", "Bearer "+token.getToken());                            //토큰약속 문자열 Bearer 포함 해야함
+        response.addHeader("Refresh", "Bearer "+token.getRefreshToken());
         response.setContentType("application/json;charset=UTF-8");
-
         response.sendRedirect("/");
     }
 

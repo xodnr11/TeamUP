@@ -25,6 +25,9 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserRepository userRepository;
     private final CorsFilter corsFilter;
+    private final OAuth2SuccessHandler successHandler;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final TokenService tokenService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
@@ -33,26 +36,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //http.addFilterBefore(new JwtAuthFilter(tokenService), SecurityContextPersistenceFilter.class);
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(corsFilter)
                 .formLogin().disable()
                 .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(),tokenService))
                 .authorizeRequests()
 //                .antMatchers("/oauth2/**").permitAll()      //이거 빼고는 authenticationManager
                 .antMatchers("/api/v1/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll();
 //                .anyRequest().authenticated()                           //토큰을 필요로 한
-               /* .and()
+        http
                 .oauth2Login()
                 .loginPage("/login1")
                 .successHandler(successHandler)
-                .userInfoEndpoint().userService(oAuth2UserService);*/
+                .userInfoEndpoint().userService(oAuth2UserService);
+        http.addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), userRepository,tokenService), UsernamePasswordAuthenticationFilter.class);
 
     }
 }
