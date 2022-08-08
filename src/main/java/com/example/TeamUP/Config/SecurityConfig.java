@@ -49,8 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll();
 //                .anyRequest().authenticated()                           //토큰을 필요로 한
-        http
-                .oauth2Login()
+        http.oauth2Login()
                 .loginPage("/login1")
                 .successHandler(successHandler)
                 .userInfoEndpoint().userService(oAuth2UserService);
