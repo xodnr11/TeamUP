@@ -33,31 +33,18 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         if (principalDetails.getUserInfo().getUsername().contains("naver")) {
             map.put("ID","NAVER 계정으로 로그인 중");
-            map.put("Email", userInfo.getEmail());
-            map.put("Birthday", userInfo.getBirthday());
-            map.put("NickName", userInfo.getNickname());
-            map.put("name", userInfo.getName());
-            map.put("Gender", userInfo.getGender());
-            map.put("Phone", userInfo.getPhone());
-            return ResponseEntity.ok(map);
         } else if (principalDetails.getUserInfo().getUsername().contains("kakao")) {
             map.put("ID","KAKAO 계정으로 로그인 중");
-            map.put("Email", userInfo.getEmail());
-            map.put("Birthday", userInfo.getBirthday());
-            map.put("NickName", userInfo.getNickname());
-            map.put("name", userInfo.getName());
-            map.put("Gender", userInfo.getGender());
-            map.put("Phone", userInfo.getPhone());
-            return ResponseEntity.ok(map);
+        }else{
+            map.put("ID",userInfo.getUsername());
         }
-        map.put("ID",userInfo.getUsername());
         map.put("Email", userInfo.getEmail());
         map.put("Birthday", userInfo.getBirthday());
         map.put("NickName", userInfo.getNickname());
         map.put("name", userInfo.getName());
         map.put("Gender", userInfo.getGender());
         map.put("Phone", userInfo.getPhone());
-        return ResponseEntity.ok(userInfo);
+        return ResponseEntity.ok(map);
     }
 
     @PostMapping("/api/v1/user/update")

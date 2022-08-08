@@ -6,8 +6,6 @@ import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void updateUserInformation(UserInfo userInfo,
-                                      @AuthenticationPrincipal PrincipalDetails principalDetails) {
+                                      PrincipalDetails principalDetails) {
         principalDetails.getUserInfo().setNickname(userInfo.getNickname());
         userRepository.save(principalDetails.getUserInfo());
     }
