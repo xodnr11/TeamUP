@@ -1,8 +1,8 @@
 package com.example.TeamUP.Controller;
 
+import com.example.TeamUP.Service.UserService;
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;
-import com.example.TeamUP.Service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,7 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody UserInfo user) {
@@ -41,7 +41,7 @@ public class UserController {
         map.put("Email", userInfo.getEmail());
         map.put("Birthday", userInfo.getBirthday());
         map.put("NickName", userInfo.getNickname());
-        map.put("name", userInfo.getName());
+        map.put("Name", userInfo.getName());
         map.put("Gender", userInfo.getGender());
         map.put("Phone", userInfo.getPhone());
         return ResponseEntity.ok(map);
