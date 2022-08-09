@@ -1,11 +1,14 @@
 package com.example.TeamUP.Service;
 
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
+import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.Entity.*;
 import com.example.TeamUP.Repository.TagRepository;
 import com.example.TeamUP.Repository.TeamRegisterRepository;
 import com.example.TeamUP.Repository.TeamRepository;
 import com.example.TeamUP.Repository.TeamMemberRepository;
+import com.example.TeamUP.Repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,7 @@ public class TeamServiceImpl implements TeamService{
     private final TeamRegisterRepository teamRegisterRepository;
 
     private final TagRepository tagRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void joinTeam(Team team, UserInfo userInfo, Role role) {
@@ -70,6 +74,46 @@ public class TeamServiceImpl implements TeamService{
         }
 
         tagRepository.saveAll(tags);
+    }
+
+    public ResponsePostDTO getPostInfo(Long id, Long teamId) {
+
+        Optional<Team> team = teamRepository.findById(teamId);
+        String writer = userRepository.findById(team.get().getUserInfo().getId()).get().getNickname();
+        ResponsePostDTO responsePostDTO = new ResponsePostDTO();
+
+        boolean registered = false;
+        //DTO에 담을거
+        List<Map<String,Object>> memberList = new ArrayList<>();
+
+        //팀 멤버 찾아온거
+        List<TeamMember> members = teamMemberRepository.findAllByTeam_Id(teamId);
+
+        for (TeamMember m : members){
+            //잠깐 담을거
+            Map<String,Object> member = new HashMap<>();
+
+            member.put("user_id", m.getUserInfo().getId());
+            member.put("nickname", m.getUserInfo().getNickname());
+            member.put("role", m.getRole());
+
+            memberList.add(member);
+
+            if(member.containsValue(id)){
+                registered = true;
+            }
+        }
+
+        responsePostDTO.setTeamId(teamId);
+        responsePostDTO.setTitle(team.get().getTitle());
+        responsePostDTO.setContent(team.get().getContent());
+        responsePostDTO.setWriter(writer);
+        responsePostDTO.setMax_member(team.get().getMaxMember());
+        responsePostDTO.setCurrent_member(team.get().getCurrentMember());
+        responsePostDTO.setTeam_member(memberList);
+        responsePostDTO.setRegistered(registered);
+
+        return responsePostDTO;
     }
 
     @Override

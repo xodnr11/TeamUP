@@ -7,6 +7,7 @@ import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.TeamMember;
 import com.example.TeamUP.Entity.UserInfo;
+import com.example.TeamUP.Repository.TagRepository;
 import com.example.TeamUP.Repository.TeamMemberRepository;
 import com.example.TeamUP.Repository.TeamRepository;
 import com.example.TeamUP.Repository.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,19 +28,12 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TeamController {
 
-    private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
-    private final TeamMemberRepository teamMemberRepository;
-
     private final TeamServiceImpl teamService;
 
     @PostMapping("/api/post/complete")
     public ResponseEntity<?> responseCreateTeam(
             @RequestBody RequestCreateTeamDTO teamInfo,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
-        System.out.println("팀 생성 요청 : " + teamInfo.getTitle());
-        System.out.println("팀 생성 요청자 : " + principalDetails.getUserInfo().getUsername());
 
         Team team = teamService.createTeam(teamInfo, principalDetails.getUserInfo());
 
@@ -52,41 +47,9 @@ public class TeamController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam("teamId") Long teamId) {
 
-        Optional<Team> team = teamRepository.findById(teamId);
-        String writer = userRepository.findById(team.get().getUserInfo().getId()).get().getNickname();
-        ResponsePostDTO responsePostDTO = new ResponsePostDTO();
+        Long userId = principalDetails.getUserInfo().getId();
 
-        boolean registered = false;
-        //DTO에 담을거
-        List<Map<String, Object>> memberList = new ArrayList<>();
-
-        //팀 멤버 찾아온거
-        List<TeamMember> members = teamMemberRepository.findAllByTeam_Id(teamId);
-
-        for (TeamMember m : members) {
-            //잠깐 담을거
-            Map<String, Object> member = new HashMap<>();
-            member.put("user_id", m.getUserInfo().getId());
-            member.put("nickname", m.getUserInfo().getNickname());
-            member.put("role", m.getRole());
-
-            memberList.add(member);
-
-            if (member.containsValue(principalDetails.getUserInfo().getId())) {
-                registered = true;
-            }
-        }
-
-        responsePostDTO.setTeamId(teamId);
-        responsePostDTO.setTitle(team.get().getTitle());
-        responsePostDTO.setContent(team.get().getContent());
-        responsePostDTO.setWriter(writer);
-        responsePostDTO.setMax_member(team.get().getMaxMember());
-        responsePostDTO.setCurrent_member(team.get().getCurrentMember());
-        responsePostDTO.setTeam_member(memberList);
-        responsePostDTO.setRegistered(registered);
-
-        return ResponseEntity.ok(responsePostDTO);
+        return ResponseEntity.ok(teamService.getPostInfo(userId, teamId));
     }
 
     @PostMapping("/api/register")
