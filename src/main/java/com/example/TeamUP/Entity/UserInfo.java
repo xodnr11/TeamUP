@@ -2,7 +2,6 @@ package com.example.TeamUP.Entity;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;

@@ -3,14 +3,13 @@ package com.example.TeamUP.Service;
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.Entity.*;
 import com.example.TeamUP.Repository.TagRepository;
+import com.example.TeamUP.Repository.TeamRegisterRepository;
 import com.example.TeamUP.Repository.TeamRepository;
 import com.example.TeamUP.Repository.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -18,9 +17,13 @@ public class TeamServiceImpl implements TeamService{
 
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final TeamRegisterRepository teamRegisterRepository;
+
+    private final TagRepository tagRepository;
 
     @Override
     public void joinTeam(Team team, UserInfo userInfo, Role role) {
+
         TeamMember teamMember = new TeamMember();
         teamMember.setTeam(team);
         teamMember.setUserInfo(userInfo);
@@ -29,7 +32,6 @@ public class TeamServiceImpl implements TeamService{
         teamMemberRepository.save(teamMember);
     }
 
-    private final TagRepository tagRepository;
     @Override
     public Team createTeam(RequestCreateTeamDTO team, UserInfo user) {
 
@@ -66,5 +68,51 @@ public class TeamServiceImpl implements TeamService{
         }
 
         tagRepository.saveAll(tags);
+    }
+
+    @Override
+    public boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo) {
+
+        Optional<Team> team = teamRepository.findById(Long.valueOf((String) map.get("teamId")));
+        TeamRegister teamRegister = teamRegisterRepository.findByUserInfo(userInfo);
+
+        if (teamRegister != null) {                                 //이미 신청한 이력이 있다면
+            teamRegister.setContent((String) map.get("content"));
+            teamRegisterRepository.save(teamRegister);
+
+            return true;
+        } else {                                                    //처음 신청이라면
+            teamRegister = TeamRegister.builder()
+                    .team(team.get())
+                    .userInfo(userInfo)
+                    .content((String) map.get("content"))
+                    .build();
+            teamRegisterRepository.save(teamRegister);
+
+            return false;
+        }
+
+    }
+
+    @Override
+    public List<Map<String, Object>> findTeams(UserInfo userInfo) {
+
+        List<Team> team = teamRepository.findByUserInfo(userInfo);
+
+        if (team != null) {
+            List<Map<String, Object>> teamList = new ArrayList<>();
+            Map<String, Object> map = new HashMap<>();
+
+            for(int i=0;i<team.size();i++){
+                map.put("teamId", team.get(i).getId());
+                map.put("title", team.get(i).getTitle());
+                teamList.add(map);
+            }
+
+            return teamList;
+        }else {
+
+            return null;
+        }
     }
 }

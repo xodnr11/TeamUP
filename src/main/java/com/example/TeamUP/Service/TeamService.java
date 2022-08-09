@@ -12,4 +12,8 @@ public interface TeamService {
     public Team createTeam(RequestCreateTeamDTO team, UserInfo user);
     public void insertTag(Team team, List<Map<String,String>> rawTags);
     public void joinTeam(Team team, UserInfo userInfo, Role role);
+
+    public boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo);
+
+    public List<Map<String, Object>> findTeams(UserInfo userInfo);
 }

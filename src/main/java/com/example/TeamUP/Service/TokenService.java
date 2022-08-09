@@ -23,7 +23,7 @@ public class TokenService {
     }
 
     public Token generateToken(Long uid, String role) {
-        long tokenPeriod = 1000L * 60L * 30L;                   //30분
+        long tokenPeriod = 1000L * 60L * 60 * 24L * 30L;                   //1달
 //        long tokenPeriod = 1000L * 1L;                   //1초
         long refreshPeriod = 1000L * 60L * 60L * 24L * 30L;     //1달
 //        long refreshPeriod = 1000L * 1L;
