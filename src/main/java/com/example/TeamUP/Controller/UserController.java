@@ -1,46 +1,57 @@
 package com.example.TeamUP.Controller;
 
-import com.example.TeamUP.Entity.Role;
+import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;
-import com.example.TeamUP.Repository.UserRepository;
+import com.example.TeamUP.Service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class UserController {
-
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final UserServiceImpl userService;
 
     @PostMapping("/join")
-    public String join(@RequestBody UserInfo user) {
-        System.out.println(user);
-        user.setRole(Role.USER);
-        user.setRefreshtoken("123123");
-        user.setEmail("123123");
-        user.setGender('m');
-        user.setName("name");
-        user.setNickname("nickname");
-        user.setPhone("0101");
-        user.setBirthday(new Date(2020-10-10));
-        String rawPassword = user.getPassword();
-        String encPassword = passwordEncoder.encode(rawPassword);
-        user.setPassword(encPassword);
+    public ResponseEntity<?> join(@RequestBody UserInfo user) {
+        if(userService.join(user)){
+            return ResponseEntity.ok("회원가입 완료");
 
-        userRepository.save(user);
-        return "회원가입 완료";
+        }else {
+            return ResponseEntity.ok("이미 존재하는 회원");
+        }
     }
 
-    @GetMapping("/api/v1/user")
-    public @ResponseBody String user(){
-        return "user";
+    @GetMapping("/api/v1/user/mypage")
+    @ResponseBody
+    public ResponseEntity<?> userInformation(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        UserInfo userInfo = principalDetails.getUserInfo();
+        Map<String, Object> map = new HashMap<>();
+        if (principalDetails.getUserInfo().getUsername().contains("naver")) {
+            map.put("ID","NAVER 계정으로 로그인 중");
+        } else if (principalDetails.getUserInfo().getUsername().contains("kakao")) {
+            map.put("ID","KAKAO 계정으로 로그인 중");
+        }else{
+            map.put("ID",userInfo.getUsername());
+        }
+        map.put("Email", userInfo.getEmail());
+        map.put("Birthday", userInfo.getBirthday());
+        map.put("NickName", userInfo.getNickname());
+        map.put("name", userInfo.getName());
+        map.put("Gender", userInfo.getGender());
+        map.put("Phone", userInfo.getPhone());
+        return ResponseEntity.ok(map);
+    }
+
+    @PostMapping("/api/v1/user/update")
+    @ResponseBody
+    public ResponseEntity<?> updateUserInformation(@RequestBody UserInfo userInfo,
+                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        userService.updateUserInformation(userInfo,principalDetails);
+        return ResponseEntity.ok("회원정보 업데이트 완료");
     }
 }

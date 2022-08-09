@@ -5,10 +5,8 @@ import com.example.TeamUP.Service.TokenService;
 import com.example.TeamUP.Service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,9 +39,9 @@ public class TokenController {
 
             Token token = userService.updateRefreshToken(Long.valueOf(userid),refreshToken);
             log.info("리프레쉬 토큰 만료 되지 않음");
-            response.addHeader("Authorization",token.getToken());
-            response.addHeader("Refresh",token.getRefreshToken());
-            return ResponseEntity.ok("아무내용 응답");
+            response.addHeader("Authorization","Bearer "+token.getToken());
+            response.addHeader("Refresh","Bearer "+token.getRefreshToken());
+            return ResponseEntity.ok("Token 재발급 완료");
         }else {
             log.info("리프레쉬 토큰 만료 작동 확인 리다이렉트");
             response.sendRedirect("/login1");

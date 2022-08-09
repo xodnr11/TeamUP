@@ -7,6 +7,7 @@ import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -17,10 +18,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 
 @Slf4j
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public CustomOAuth2UserService(BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {            //OAuth2를 통해 회원정보 불러오기
         OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -62,9 +70,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             e.printStackTrace();
         }
 
+
         UserInfo userInfo = UserInfo.builder()
                 .username(username)
-                .password("random")
+                .password(passwordEncoder.encode(randomString()))               //패스워드 랜덤 문자 저장
                 .gender(gender)
                 .nickname(nickname)
                 .email(email)
@@ -79,4 +88,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .build();
     }
 
+    public String randomString() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
 }
