@@ -28,7 +28,7 @@ public class UserController {
         user.setEmail("123123");
         user.setGender('m');
         user.setName("name");
-        user.setNickname("niname");
+        user.setNickname("nickname");
         user.setPhone("0101");
         user.setBirthday(new Date(2020-10-10));
         String rawPassword = user.getPassword();

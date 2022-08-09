@@ -2,19 +2,23 @@ package com.example.TeamUP.Controller;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
+import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.Entity.Tag;
 import com.example.TeamUP.Entity.Team;
+import com.example.TeamUP.Entity.TeamMember;
+import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.TagRepository;
+import com.example.TeamUP.Repository.TeamMemberRepository;
 import com.example.TeamUP.Repository.TeamRepository;
+import com.example.TeamUP.Repository.UserRepository;
+import com.example.TeamUP.Service.TeamServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,42 +26,66 @@ public class TeamController {
 
     private final TeamRepository teamRepository;
     private final TagRepository tagRepository;
+    private final UserRepository userRepository;
+    private final TeamMemberRepository teamMemberRepository;
+
+    private final TeamServiceImpl teamService;
 
     @PostMapping("/api/post/complete")
-    public void createTeam(
+    public ResponseEntity<?> responseCreateTeam(
             @RequestBody RequestCreateTeamDTO teamInfo,
-            @AuthenticationPrincipal Authentication authentication) {
-
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         System.out.println("팀 생성 요청 : " + teamInfo.getTitle());
         System.out.println("팀 생성 요청자 : " + principalDetails.getUserInfo().getUsername());
 
-        Team team = new Team();
+        Team team = teamService.createTeam(teamInfo, principalDetails.getUserInfo());
 
-        team.setTeamName(teamInfo.getTeamName());
-        team.setUserInfo(principalDetails.getUserInfo());
-        team.setTeamPresent(teamInfo.getPresent());
-        team.setCategory(teamInfo.getCategory());
-        team.setContent(teamInfo.getContent());
-        team.setMaxMember(teamInfo.getMax_mamber());
-        team.setCurrentMember(1);
+        teamService.insertTag(team, teamInfo.getTags());
 
-        teamRepository.save(team);
-
-        List<Tag> tags = new ArrayList<>();
-
-        for (String tag :teamInfo.getTags()){
-            Tag teamTag = Tag.builder()
-                    .team(team)
-                    .tagName(tag)
-                    .build();
-
-            tags.add(teamTag);
-        }
-
-        tagRepository.saveAll(tags);
+        return ResponseEntity.ok("팀 생성 완료");
     }
 
+    @GetMapping("/api/post")
+    public ResponseEntity<?> responsePostInfo(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam("teamId") Long teamId){
+
+        Optional<Team> team = teamRepository.findById(teamId);
+        String writer = userRepository.findById(team.get().getUserInfo().getId()).get().getNickname();
+        ResponsePostDTO responsePostDTO = new ResponsePostDTO();
+
+        boolean registered = false;
+        //DTO에 담을거
+        List<Map<String,Object>> memberList = new ArrayList<>();
+
+        //팀 멤버 찾아온거
+        List<TeamMember> members = teamMemberRepository.findAllByTeam_Id(teamId);
+
+        for (TeamMember m : members){
+            //잠깐 담을거
+            Map<String,Object> member = new HashMap<>();
+            member.put("user_id", m.getUserInfo().getId());
+            member.put("nickname", m.getUserInfo().getNickname());
+            member.put("role", m.getRole());
+
+            memberList.add(member);
+
+            if(member.containsValue(principalDetails.getUserInfo().getId())){
+                registered = true;
+            }
+        }
+
+        responsePostDTO.setTeamId(teamId);
+        responsePostDTO.setTitle(team.get().getTitle());
+        responsePostDTO.setContent(team.get().getContent());
+        responsePostDTO.setWriter(writer);
+        responsePostDTO.setMax_member(team.get().getMaxMember());
+        responsePostDTO.setCurrent_member(team.get().getCurrentMember());
+        responsePostDTO.setTeam_member(memberList);
+        responsePostDTO.setRegistered(registered);
+
+        return ResponseEntity.ok(responsePostDTO);
+    }
 
 }

@@ -8,8 +8,6 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Builder
-@RequiredArgsConstructor
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +19,15 @@ public class Tag {
 
     @Column(name = "tag_name")
     private String tagName;
+
+    @Builder
+    public Tag(Long id, Team team, String tagName) {
+        this.id = id;
+        this.team = team;
+        this.tagName = tagName;
+    }
+
+    public Tag() {
+
+    }
 }

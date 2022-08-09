@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class RequestCreateTeamDTO {
+public class ResponsePostDTO {
+    Long teamId;
     String title;
     String content;
+    String writer;
     int max_member;
-    List<Map<String,String>> tags;
-    String category;
-    String present;
-    String teamName;
+    int current_member;
+    List<Map<String, Object>> team_member;
+    Boolean registered;
 }
