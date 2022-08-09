@@ -52,7 +52,7 @@ public class UserController {
         userInfoDTO.setUser_phone(userInfo.getPhone());
         userInfoDTO.setUser_nickname(userInfo.getNickname());
 
-        List<Map<String, Object>> teamList = teamService.findTeams(userInfo);
+        List<Map<String, Object>> teamList = teamService.findMyTeams(userInfo);
 
         if (teamList != null) {
             userInfoDTO.setTeam(teamList);

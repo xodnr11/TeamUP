@@ -15,5 +15,5 @@ public interface TeamService {
 
     public boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo);
 
-    public List<Map<String, Object>> findTeams(UserInfo userInfo);
+    public List<Map<String, Object>> findMyTeams(UserInfo userInfo);
 }
