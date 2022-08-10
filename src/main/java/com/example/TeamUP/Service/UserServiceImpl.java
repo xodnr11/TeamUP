@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService{
         Optional<UserInfo> userInfo = userRepository.findById(userId);
         System.out.println("유저 서비스의 유저인포 값 확인"+userInfo.get());
 
-        TokenService tokenService = new TokenService();
+        TokenServiceImpl tokenService = new TokenServiceImpl();
 
         Token returnToken = tokenService.generateToken(userId,"ROLE_USER");
         userInfo.get().setRefreshtoken("Bearer "+returnToken.getRefreshToken());

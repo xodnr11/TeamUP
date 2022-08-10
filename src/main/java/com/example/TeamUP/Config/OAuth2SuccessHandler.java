@@ -3,7 +3,7 @@ package com.example.TeamUP.Config;
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
-import com.example.TeamUP.Service.TokenService;
+import com.example.TeamUP.Service.TokenServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenService;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
 

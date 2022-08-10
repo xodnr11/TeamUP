@@ -99,24 +99,22 @@ public class TeamServiceImpl implements TeamService{
 
         List<TeamMember> myTeams = teamMemberRepository.findByUserInfo(userInfo);
 
-        List<Team> teams = new ArrayList<>();
         List<Map<String, Object>> teamList = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
 
         if (myTeams != null) {
-            for (int i = 0; i < myTeams.size(); i++) {
-                Optional<Team> team = teamRepository.findById(myTeams.get(i).getTeam().getId());
-                teams.add(team.get());
-            }
 
-            for(int i=0;i<teams.size();i++){
-                map.put("teamId", teams.get(i).getId());
-                map.put("title", teams.get(i).getTitle());
+            for(int i=0;i<myTeams.size();i++){
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("teamId", myTeams.get(i).getTeam().getId());
+                map.put("title", myTeams.get(i).getTeam().getTitle());
                 teamList.add(map);
+
             }
             return teamList;
 
         } else {
+
             return null;
         }
     }

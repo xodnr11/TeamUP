@@ -1,4 +1,4 @@
-package com.example.TeamUP.Service;
+package com.example.TeamUP.Auth;
 
 import com.example.TeamUP.Auth.OAuth.KakaoUserInfo;
 import com.example.TeamUP.Auth.OAuth.NaverUserInfo;

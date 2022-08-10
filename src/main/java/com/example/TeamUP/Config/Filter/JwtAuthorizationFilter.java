@@ -3,7 +3,7 @@ package com.example.TeamUP.Config.Filter;
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
-import com.example.TeamUP.Service.TokenService;
+import com.example.TeamUP.Service.TokenServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenService;
     private final UserRepository userRepository;
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository,TokenService tokenService) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository, TokenServiceImpl tokenService) {
         super(authenticationManager);
         this.userRepository = userRepository;
         this.tokenService = tokenService;

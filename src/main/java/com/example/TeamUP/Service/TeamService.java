@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface TeamService {
-    public Team createTeam(RequestCreateTeamDTO team, UserInfo user);
-    public void insertTag(Team team, List<Map<String,String>> rawTags);
-    public void joinTeam(Team team, UserInfo userInfo, Role role);
+    Team createTeam(RequestCreateTeamDTO team, UserInfo user);
+    void insertTag(Team team, List<Map<String,String>> rawTags);
+    void joinTeam(Team team, UserInfo userInfo, Role role);
 
-    public boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo);
+    boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo);
 
-    public List<Map<String, Object>> findMyTeams(UserInfo userInfo);
+    List<Map<String, Object>> findMyTeams(UserInfo userInfo);
 }

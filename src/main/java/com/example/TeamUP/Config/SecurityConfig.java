@@ -3,20 +3,15 @@ package com.example.TeamUP.Config;
 import com.example.TeamUP.Config.Filter.JwtAuthenticationFilter;
 import com.example.TeamUP.Config.Filter.JwtAuthorizationFilter;
 import com.example.TeamUP.Repository.UserRepository;
-import com.example.TeamUP.Service.CustomOAuth2UserService;
-import com.example.TeamUP.Service.PrincipalDetailsService;
-import com.example.TeamUP.Service.TokenService;
+import com.example.TeamUP.Auth.CustomOAuth2UserService;
+import com.example.TeamUP.Service.TokenServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -27,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
     private final OAuth2SuccessHandler successHandler;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenService;
 
 
     @Override

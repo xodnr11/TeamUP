@@ -1,4 +1,4 @@
-package com.example.TeamUP.Service;
+package com.example.TeamUP.Auth;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;

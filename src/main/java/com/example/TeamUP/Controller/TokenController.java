@@ -1,7 +1,7 @@
 package com.example.TeamUP.Controller;
 
 import com.example.TeamUP.Config.Token;
-import com.example.TeamUP.Service.TokenService;
+import com.example.TeamUP.Service.TokenServiceImpl;
 import com.example.TeamUP.Service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RestController
 public class TokenController {
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenService;
     private final UserServiceImpl userService;
 
     @GetMapping("/token/expired")
