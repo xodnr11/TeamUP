@@ -1,6 +1,7 @@
 package com.example.TeamUP.Service;
 
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
+import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.UserInfo;
@@ -14,7 +15,7 @@ public interface TeamService {
     Team createTeam(RequestCreateTeamDTO team, UserInfo user);
     void insertTag(Team team, List<Map<String,String>> rawTags);
     void joinTeam(Team team, UserInfo userInfo, Role role);
-
+    ResponsePostDTO getPostInfo(Long id, Long teamId);
     boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo);
 
     List<Map<String, Object>> getMyTeams(UserInfo userInfo);
