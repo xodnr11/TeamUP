@@ -34,6 +34,7 @@ public class TeamServiceImpl implements TeamService{
     public void joinTeam(Team team, UserInfo userInfo, Role role) {
 
         TeamMember teamMember = new TeamMember();
+
         teamMember.setTeam(team);
         teamMember.setUserInfo(userInfo);
         teamMember.setRole(role.getKey());
@@ -111,8 +112,8 @@ public class TeamServiceImpl implements TeamService{
     public ResponseTeamDTO getTeamInfo(Long userId, Long teamId) {
 
         ResponseTeamDTO responseTeamDTO = new ResponseTeamDTO();
-
         Optional<Team> rawTeam = teamRepository.findById(teamId);
+
         if (rawTeam.isPresent()){
             Team team = rawTeam.get();
             responseTeamDTO.setTeamId(team.getId());
@@ -131,6 +132,7 @@ public class TeamServiceImpl implements TeamService{
     }
 
     public List<Map<String,Object>> getTeamMember(Long teamId) {
+
         List<Map<String,Object>> memberList = new ArrayList<>();
         List<TeamMember> members = teamMemberRepository.findAllByTeam_Id(teamId);
 
@@ -143,12 +145,12 @@ public class TeamServiceImpl implements TeamService{
             member.put("role", m.getRole());
 
             memberList.add(member);
-
         }
         return memberList;
     }
 
     public List<Map<String,Object>> getTeamCalendar(Long teamId) {
+
         List<Map<String,Object>> calendarList = new ArrayList<>();
         List<Calendar> calendars = calendarRepository.findByTeam_id(teamId);
 
@@ -160,16 +162,17 @@ public class TeamServiceImpl implements TeamService{
             calendar.put("content", c.getContent());
 
             calendarList.add(calendar);
-
         }
         return calendarList;
     }
 
     public List<Map<String,Object>> getTeamRegister(Long teamId) {
+
         List<Map<String, Object>> registerList = new ArrayList<>();
         List<TeamRegister> registers = teamRegisterRepository.findByTeam_Id(teamId);
 
         for (TeamRegister r : registers){
+
             Map<String, Object> register = new HashMap<>();
 
             register.put("user_id", r.getUserInfo().getId());
@@ -182,20 +185,20 @@ public class TeamServiceImpl implements TeamService{
 
             registerList.add(register);
         }
-
         return registerList;
     }
 
-    public void createCalendar(Long teamId, Calendar calendar) {
-        //사용자 권한 인증해야함
+    public void createCalendar(Long teamId, Calendar calendar) {//사용자 권한 인증해야함
+
         Optional<Team> rawTeam = teamRepository.findById(teamId);
+
         if (rawTeam.isPresent()){
+
             Team team = rawTeam.get();
             calendar.setTeam(team);
 
             calendarRepository.save(calendar);
         }
-
     }
 
     @Override
