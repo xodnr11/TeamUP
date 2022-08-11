@@ -83,14 +83,12 @@ public class TeamServiceImpl implements TeamService{
         ResponsePostDTO responsePostDTO = new ResponsePostDTO();
 
         boolean registered = false;
-        //DTO에 담을거
-        List<Map<String,Object>> memberList = new ArrayList<>();
 
-        //팀 멤버 찾아온거
+        List<Map<String,Object>> memberList = new ArrayList<>();
         List<TeamMember> members = teamMemberRepository.findAllByTeam_Id(teamId);
 
         for (TeamMember m : members){
-            //잠깐 담을거
+
             Map<String,Object> member = new HashMap<>();
 
             member.put("user_id", m.getUserInfo().getId());
