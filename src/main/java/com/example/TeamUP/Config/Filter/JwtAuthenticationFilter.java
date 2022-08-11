@@ -26,24 +26,32 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         System.out.println("JwtAuthenticationFilter 실행 - 로그인 시도중");
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserInfo user = null;
+        try {
+            user = objectMapper.readValue(request.getInputStream(), UserInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            UserInfo user = objectMapper.readValue(request.getInputStream(), UserInfo.class);
-
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-
-            System.out.println(authenticationManager.authenticate(authenticationToken));
+            authenticationManager.authenticate(authenticationToken);
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             System.out.println("authentication : "+authentication);
-
+            System.out.println(2);
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
             System.out.println(principalDetails.getUserInfo().getUsername());
-
             return authentication;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (NullPointerException e) {
+            try {
+                response.sendError(401);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return null;
         }
     }
 
@@ -54,9 +62,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
-
         Token jwtToken = tokenService.generateToken(principalDetails.getUserInfo().getId(),"USER");
-
 
         response.addHeader("Authorization", "Bearer " + jwtToken.getToken());
         response.addHeader("Refresh", "Bearer "+jwtToken.getRefreshToken());
