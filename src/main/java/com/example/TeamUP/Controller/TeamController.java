@@ -2,6 +2,7 @@ package com.example.TeamUP.Controller;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
+import com.example.TeamUP.DTO.ResponseBoardDTO;
 import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.TeamMember;
@@ -11,6 +12,10 @@ import com.example.TeamUP.Repository.TeamRepository;
 import com.example.TeamUP.Repository.UserRepository;
 import com.example.TeamUP.Service.TeamServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -95,5 +100,30 @@ public class TeamController {
         } else {
             return ResponseEntity.ok("팀 신청 완료");
         }
+    }
+
+    @GetMapping("api/board")
+    public ResponseEntity<?> responseBoard(@PageableDefault(size = 10, sort = "id",direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<Team> teamList = teamService.getTeamList(pageable);
+        ResponseBoardDTO responseBoardDTO = new ResponseBoardDTO();
+
+        responseBoardDTO.setTotal_page(teamList.getTotalPages());       //전체 페이지
+
+        List<Map<String, Object>> posts = new ArrayList<>();
+
+        for (int i = 0; i < teamList.getContent().size(); i++) {
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("team_id", teamList.getContent().get(i).getId());
+            map.put("title", teamList.getContent().get(i).getTitle());
+            map.put("writer", teamList.getContent().get(i).getUserInfo().getNickname());
+            posts.add(map);
+
+        }
+
+        responseBoardDTO.setPosts(posts);
+
+        return ResponseEntity.ok(responseBoardDTO);
     }
 }

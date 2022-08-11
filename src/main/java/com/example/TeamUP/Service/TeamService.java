@@ -4,6 +4,8 @@ import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.UserInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -15,5 +17,6 @@ public interface TeamService {
 
     boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo);
 
-    List<Map<String, Object>> findMyTeams(UserInfo userInfo);
+    List<Map<String, Object>> getMyTeams(UserInfo userInfo);
+    Page<Team> getTeamList(Pageable pageable);
 }

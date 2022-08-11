@@ -7,6 +7,8 @@ import com.example.TeamUP.Repository.TeamRegisterRepository;
 import com.example.TeamUP.Repository.TeamRepository;
 import com.example.TeamUP.Repository.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -94,8 +96,9 @@ public class TeamServiceImpl implements TeamService{
 
     }
 
+
     @Override
-    public List<Map<String, Object>> findMyTeams(UserInfo userInfo) {
+    public List<Map<String, Object>> getMyTeams(UserInfo userInfo) {
 
         List<TeamMember> myTeams = teamMemberRepository.findByUserInfo(userInfo);
 
@@ -117,5 +120,11 @@ public class TeamServiceImpl implements TeamService{
 
             return null;
         }
+    }
+
+    @Override
+    public Page<Team> getTeamList(Pageable pageable) {
+        Page<Team> teamList = teamRepository.findAll(pageable);
+        return teamList;
     }
 }
