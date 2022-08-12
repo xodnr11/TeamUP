@@ -29,6 +29,7 @@ public class TeamServiceImpl implements TeamService{
     private final UserRepository userRepository;
     private final TeamRegisterRepository teamRegisterRepository;
     private final CalendarRepository calendarRepository;
+    private final TagRepository tagRepository;
 
     @Override
     public void joinTeam(Team team, UserInfo userInfo, Role role) {
