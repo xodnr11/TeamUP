@@ -67,7 +67,6 @@ public class TeamController {
     }
 
     @PostMapping("/api/register")
-    @ResponseBody
     public ResponseEntity<?> registerTeam(@RequestBody Map<String, Object> map,
                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
@@ -77,6 +76,10 @@ public class TeamController {
         } else {
             return ResponseEntity.ok("팀 신청 완료");
         }
+    }
+
+    public ResponseEntity<?> responseJoinTeam(@RequestBody Map<String, Object> map){
+        return ResponseEntity.ok("");
     }
 
     @GetMapping("api/board")

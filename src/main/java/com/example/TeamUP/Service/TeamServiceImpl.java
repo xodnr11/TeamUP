@@ -102,6 +102,7 @@ public class TeamServiceImpl implements TeamService{
         return responsePostDTO;
     }
 
+    @Override
     public ResponseTeamDTO getTeamInfo(Long userId, Long teamId) {
 
         ResponseTeamDTO responseTeamDTO = new ResponseTeamDTO();
@@ -124,6 +125,7 @@ public class TeamServiceImpl implements TeamService{
         return responseTeamDTO;
     }
 
+    @Override
     public List<Map<String,Object>> getTeamMember(Long teamId) {
 
         List<Map<String,Object>> memberList = new ArrayList<>();
@@ -142,6 +144,7 @@ public class TeamServiceImpl implements TeamService{
         return memberList;
     }
 
+    @Override
     public List<Map<String,Object>> getTeamCalendar(Long teamId) {
 
         List<Map<String,Object>> calendarList = new ArrayList<>();
@@ -159,6 +162,7 @@ public class TeamServiceImpl implements TeamService{
         return calendarList;
     }
 
+    @Override
     public List<Map<String,Object>> getTeamRegister(Long teamId) {
 
         List<Map<String, Object>> registerList = new ArrayList<>();
@@ -181,6 +185,7 @@ public class TeamServiceImpl implements TeamService{
         return registerList;
     }
 
+    @Override
     public void createCalendar(Long teamId, Calendar calendar) {//사용자 권한 인증해야함
 
         Optional<Team> rawTeam = teamRepository.findById(teamId);
