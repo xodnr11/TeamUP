@@ -80,7 +80,7 @@ public class TeamController {
     }
 
     @GetMapping("api/board")
-    public ResponseEntity<?> responseBoard(@PageableDefault(size = 10, sort = "id",direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<?> responseBoard(@PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Team> teamList = teamService.getTeamList(pageable);
         ResponseBoardDTO responseBoardDTO = new ResponseBoardDTO();
