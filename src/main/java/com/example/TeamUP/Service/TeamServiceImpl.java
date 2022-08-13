@@ -4,12 +4,6 @@ import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.DTO.ResponseTeamDTO;
 import com.example.TeamUP.Entity.*;
-import com.example.TeamUP.Repository.TagRepository;
-import com.example.TeamUP.Repository.TeamRegisterRepository;
-import com.example.TeamUP.Repository.TeamRepository;
-import com.example.TeamUP.Repository.TeamMemberRepository;
-import com.example.TeamUP.Repository.UserRepository;
-
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +18,10 @@ public class TeamServiceImpl implements TeamService{
 
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
-
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final TeamRegisterRepository teamRegisterRepository;
     private final CalendarRepository calendarRepository;
-    private final TagRepository tagRepository;
 
     @Override
     public void joinTeam(Team team, UserInfo userInfo, Role role) {
