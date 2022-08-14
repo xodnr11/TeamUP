@@ -186,17 +186,40 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
-    public void createCalendar(Long teamId, Calendar calendar) {//사용자 권한 인증해야함
+    public String createCalendar(Long userId, Long teamId, Calendar calendar) {//사용자 권한 인증해야함
 
         Optional<Team> rawTeam = teamRepository.findById(teamId);
+        String successCreateCalender = "";
 
         if (rawTeam.isPresent()){
 
             Team team = rawTeam.get();
-            calendar.setTeam(team);
+            if (team.getUserInfo().getId() == userId) {
 
-            calendarRepository.save(calendar);
+                Calendar calendar1 = calendarRepository.findByTeamIdAndDate(team.getId(),calendar.getDate());                 //동일한 날짜의 수정된 content가 들어왔을 경우도 있기때문에
+
+                if (calendar1 != null) {                                        //해당 날짜의 일정 내용이 존재한다면 업데이트
+
+                    calendar1.setContent(calendar.getContent());
+                    calendarRepository.save(calendar1);
+                    successCreateCalender = "일정 수정 완료";
+
+                } else {                                                         //해당 날짜의 일정이 존재하지 않다면 새로 만들기
+
+                    calendar.setTeam(team);
+                    calendarRepository.save(calendar);
+                    successCreateCalender = "일정 생성 완료";
+
+                }
+
+            }else {                                                                 //일정 생성 권한이 없음
+
+                successCreateCalender = "일정 생성 권한 없음.";
+
+            }
         }
+
+        return successCreateCalender;
     }
 
     @Override

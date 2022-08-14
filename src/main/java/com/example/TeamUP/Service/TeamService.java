@@ -22,7 +22,7 @@ public interface TeamService {
     List<Map<String,Object>> getTeamMember(Long teamId);
     List<Map<String,Object>> getTeamCalendar(Long teamId);
     List<Map<String,Object>> getTeamRegister(Long teamId);
-    void createCalendar(Long teamId, Calendar calendar);
+    String createCalendar(Long userId,Long teamId, Calendar calendar);
     boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo);
     List<Map<String, Object>> getMyTeams(UserInfo userInfo);
     Page<Team> getTeamList(Pageable pageable);

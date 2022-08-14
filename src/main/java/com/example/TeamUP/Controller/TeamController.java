@@ -58,12 +58,20 @@ public class TeamController {
 
     @PostMapping("/api/team/calendar/create")
     public ResponseEntity<?> responseCreateCalendar(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody Calendar calendar,
             @RequestParam("teamId") Long teamId) {
 
-        teamService.createCalendar(teamId, calendar);
+        Long userId = principalDetails.getUserInfo().getId();
+        String resultCreateCalendar = teamService.createCalendar(userId,teamId,calendar);
 
-        return ResponseEntity.ok("일정 생성 완료");
+        if (resultCreateCalendar=="일정 생성 완료") {
+            return ResponseEntity.ok(resultCreateCalendar);
+        }else if(resultCreateCalendar=="일정 수정 완료"){
+            return ResponseEntity.ok(resultCreateCalendar);
+        } else {
+            return ResponseEntity.ok("일정 생성 권한이 없음");
+        }
     }
 
     @PostMapping("/api/register")
@@ -71,6 +79,7 @@ public class TeamController {
                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         UserInfo userInfo = principalDetails.getUserInfo();
+
         if (teamService.createTeamRegister(map, userInfo)) {
             return ResponseEntity.ok("신청 내용 수정완료");
         } else {
