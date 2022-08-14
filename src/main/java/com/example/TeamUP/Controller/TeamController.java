@@ -65,9 +65,9 @@ public class TeamController {
         Long userId = principalDetails.getUserInfo().getId();
         String resultCreateCalendar = teamService.createCalendar(userId,teamId,calendar);
 
-        if (resultCreateCalendar=="일정 생성 완료") {
+        if (resultCreateCalendar.equals("일정 생성 완료")) {
             return ResponseEntity.ok(resultCreateCalendar);
-        }else if(resultCreateCalendar=="일정 수정 완료"){
+        }else if(resultCreateCalendar.equals("일정 수정 완료")){
             return ResponseEntity.ok(resultCreateCalendar);
         } else {
             return ResponseEntity.ok("일정 생성 권한이 없음");
@@ -79,11 +79,13 @@ public class TeamController {
                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         UserInfo userInfo = principalDetails.getUserInfo();
-
-        if (teamService.createTeamRegister(map, userInfo)) {
-            return ResponseEntity.ok("신청 내용 수정완료");
+        String resultRegister = teamService.createTeamRegister(map, userInfo);
+        if (resultRegister.equals("이미 팀원")) {
+            return ResponseEntity.ok("이미 팀원입니다.");
+        } else if (resultRegister.equals("신청 내용 수정 완료")) {
+            return ResponseEntity.ok("신청 내용 수정이 완료 되었습니다");
         } else {
-            return ResponseEntity.ok("팀 신청 완료");
+            return ResponseEntity.ok("신청 완료");
         }
     }
 

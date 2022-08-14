@@ -194,6 +194,7 @@ public class TeamServiceImpl implements TeamService{
         if (rawTeam.isPresent()){
 
             Team team = rawTeam.get();
+
             if (team.getUserInfo().getId() == userId) {
 
                 Calendar calendar1 = calendarRepository.findByTeamIdAndDate(team.getId(),calendar.getDate());                 //동일한 날짜의 수정된 content가 들어왔을 경우도 있기때문에
@@ -223,17 +224,26 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
-    public boolean createTeamRegister(Map<String, Object> map,UserInfo userInfo) {
+    public String createTeamRegister(Map<String, Object> map,UserInfo userInfo) {
 
-        Optional<Team> team = teamRepository.findById(Long.valueOf((String) map.get("teamId")));
+        Optional<Team> team = teamRepository.findById(Long.valueOf((String) map.get("team_id")));
         TeamRegister teamRegister = teamRegisterRepository.findByUserInfo(userInfo);
+        TeamMember teamMember = teamMemberRepository.findByUserInfoAndTeam(userInfo,team.get());
+
+        if (teamMember != null) {
+
+            return "이미 팀원";
+        }
 
         if (teamRegister != null) {                                 //이미 신청한 이력이 있다면
+
             teamRegister.setContent((String) map.get("content"));
             teamRegisterRepository.save(teamRegister);
 
-            return true;
+            return "신청 내용 수정 완료";
+
         } else {                                                    //처음 신청이라면
+
             teamRegister = TeamRegister.builder()
                     .team(team.get())
                     .userInfo(userInfo)
@@ -241,11 +251,11 @@ public class TeamServiceImpl implements TeamService{
                     .build();
             teamRegisterRepository.save(teamRegister);
 
-            return false;
+            return "신청 완료";
+
         }
 
     }
-
 
     @Override
     public List<Map<String, Object>> getMyTeams(UserInfo userInfo) {
