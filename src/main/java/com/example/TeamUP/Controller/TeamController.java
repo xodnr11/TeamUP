@@ -75,11 +75,13 @@ public class TeamController {
     }
 
     @PostMapping("/api/register")
-    public ResponseEntity<?> registerTeam(@RequestBody Map<String, Object> map,
-                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> registerTeam(
+            @RequestBody Map<String, Object> map,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         UserInfo userInfo = principalDetails.getUserInfo();
         String resultRegister = teamService.createTeamRegister(map, userInfo);
+
         if (resultRegister.equals("이미 팀원")) {
             return ResponseEntity.ok("이미 팀원입니다.");
         } else if (resultRegister.equals("신청 내용 수정 완료")) {
@@ -93,14 +95,14 @@ public class TeamController {
     public ResponseEntity<?> responseJoinTeam(
             @RequestBody Map<String, Object> map){
 
-        Long teamId = (Long) map.get("team_id");
-        Long userId = (Long) map.get("user_id");
+        Long teamId = Long.valueOf((String) map.get("team_id"));
+        Long userId = Long.valueOf((String) map.get("user_id"));
         boolean accept = (boolean) map.get("accept");
 
         if (accept){
             teamService.acceptMember(teamId, userId);
             return ResponseEntity.ok("수락 완료");
-        } else{
+        } else {
             teamService.rejectMember(teamId, userId);
             return ResponseEntity.ok("거절 완료");
         }

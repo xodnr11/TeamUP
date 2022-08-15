@@ -52,6 +52,8 @@ public class TeamServiceImpl implements TeamService{
             System.out.println("멤버 수락 진행(신청 내용 있음, 멤버 아님)");
 
             TeamRegister teamRegister = teamRegisterRepository.findByTeam_IdAndUserInfo_Id(teamId, userId);
+            teamRegister.setTeam(null);
+            teamRegister.setUserInfo(null);
             teamRegisterRepository.delete(teamRegister);
 
             Optional<Team> team = teamRepository.findById(teamId);
