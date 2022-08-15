@@ -13,7 +13,7 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
 
     List<TeamMember> findByUserInfo(UserInfo userInfo);
 
-    TeamMember findByUserInfoAndTeam(UserInfo userInfo, Team team);
+    TeamMember findByUserInfo_IdAndTeam_Id(Long userInfo_id, Long team_id);
 
     boolean existsByTeam_IdAndUserInfo_Id(Long team_id, Long userInfo_id);
 }

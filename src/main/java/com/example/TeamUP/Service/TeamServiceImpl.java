@@ -262,9 +262,8 @@ public class TeamServiceImpl implements TeamService{
     @Override
     public String createTeamRegister(Map<String, Object> map,UserInfo userInfo) {
 
-        Optional<Team> team = teamRepository.findById(Long.valueOf((String) map.get("team_id")));
         TeamRegister teamRegister = teamRegisterRepository.findByUserInfo(userInfo);
-        TeamMember teamMember = teamMemberRepository.findByUserInfoAndTeam(userInfo,team.get());
+        TeamMember teamMember = teamMemberRepository.findByUserInfo_IdAndTeam_Id(userInfo.getId(),Long.valueOf((String) map.get("team_id")));
 
         if (teamMember != null) {
 
@@ -279,6 +278,7 @@ public class TeamServiceImpl implements TeamService{
             return "신청 내용 수정 완료";
 
         } else {                                                    //처음 신청이라면
+            Optional<Team> team = teamRepository.findById(Long.valueOf((String) map.get("team_id")));
 
             teamRegister = TeamRegister.builder()
                     .team(team.get())
