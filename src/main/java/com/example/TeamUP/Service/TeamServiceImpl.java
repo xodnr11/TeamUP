@@ -26,13 +26,49 @@ public class TeamServiceImpl implements TeamService{
     @Override
     public void joinTeam(Team team, UserInfo userInfo, Role role) {
 
-        TeamMember teamMember = new TeamMember();
+        if (team.getMaxMember()>team.getCurrentMember()){
 
-        teamMember.setTeam(team);
-        teamMember.setUserInfo(userInfo);
-        teamMember.setRole(role.getKey());
+            TeamMember teamMember = new TeamMember();
 
-        teamMemberRepository.save(teamMember);
+            teamMember.setTeam(team);
+            teamMember.setUserInfo(userInfo);
+            teamMember.setRole(role.getKey());
+
+            teamMemberRepository.save(teamMember);
+
+            team.setCurrentMember(team.getCurrentMember()+1);
+
+            teamRepository.save(team);
+        }else {
+            System.out.println("팀 꽉참(신청 내용만 삭제됨)");
+        }
+    }
+
+    @Override
+    public void acceptMember(Long teamId, Long userId) {
+        if (teamRegisterRepository.existsByTeam_idAndUserInfo_id(teamId, userId)
+                && !teamMemberRepository.existsByTeam_IdAndUserInfo_Id(teamId, userId)){
+
+            System.out.println("멤버 수락 진행(신청 내용 있음, 멤버 아님)");
+
+            TeamRegister teamRegister = teamRegisterRepository.findByTeam_IdAndUserInfo_Id(teamId, userId);
+            teamRegisterRepository.delete(teamRegister);
+
+            Optional<Team> team = teamRepository.findById(teamId);
+            Optional<UserInfo> user = userRepository.findById(userId);
+
+            if (team.isPresent() && user.isPresent()){
+                joinTeam(team.get(), user.get(), Role.USER);
+            }
+        }else {
+            System.out.println("신청 내용 없거나 이미 멤버임");
+        }
+    }
+
+    @Override
+    public void rejectMember(Long teamId, Long userId) {
+        TeamRegister teamRegister = teamRegisterRepository.findByTeam_IdAndUserInfo_Id(teamId, userId);
+        teamRegisterRepository.delete(teamRegister);
     }
 
     @Override
@@ -47,11 +83,11 @@ public class TeamServiceImpl implements TeamService{
         teamEntity.setCategory(team.getCategory());
         teamEntity.setContent(team.getContent());
         teamEntity.setMaxMember(team.getMax_member());
-        teamEntity.setCurrentMember(1);
+        teamEntity.setCurrentMember(0);
 
         teamRepository.save(teamEntity);
 
-        joinTeam(teamEntity, user, Role.MASTER);
+        joinTeam(teamEntity, user, Role.MANAGER);
 
         return teamEntity;
     }
@@ -222,7 +258,6 @@ public class TeamServiceImpl implements TeamService{
         }
 
     }
-
 
     @Override
     public List<Map<String, Object>> getMyTeams(UserInfo userInfo) {

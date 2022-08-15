@@ -78,12 +78,26 @@ public class TeamController {
         }
     }
 
-    public ResponseEntity<?> responseJoinTeam(@RequestBody Map<String, Object> map){
-        return ResponseEntity.ok("");
+    @PostMapping("/api/team/join")
+    public ResponseEntity<?> responseJoinTeam(
+            @RequestBody Map<String, Object> map){
+
+        Long teamId = (Long) map.get("team_id");
+        Long userId = (Long) map.get("user_id");
+        boolean accept = (boolean) map.get("accept");
+
+        if (accept){
+            teamService.acceptMember(teamId, userId);
+            return ResponseEntity.ok("수락 완료");
+        } else{
+            teamService.rejectMember(teamId, userId);
+            return ResponseEntity.ok("거절 완료");
+        }
     }
 
     @GetMapping("api/board")
-    public ResponseEntity<?> responseBoard(@PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<?> responseBoard(
+            @PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Team> teamList = teamService.getTeamList(pageable);
         ResponseBoardDTO responseBoardDTO = new ResponseBoardDTO();
