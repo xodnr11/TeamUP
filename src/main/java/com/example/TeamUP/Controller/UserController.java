@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +50,21 @@ public class UserController {
             userInfoDTO.setID(userInfo.getUsername());
         }
 
-        userInfoDTO.setUser_birthday(userInfo.getBirthday());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTime(userInfo.getBirthday());
+
+        // 하루 전
+        cal.add(Calendar.DATE, +1);
+        String birthday = dateFormat.format(cal.getTime());
+        Date date = null;
+        try {
+            date = dateFormat.parse(birthday);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        userInfoDTO.setUser_birthday(date);
         userInfoDTO.setUser_email(userInfo.getEmail());
         userInfoDTO.setUser_gender(userInfo.getGender());
         userInfoDTO.setUser_phone(userInfo.getPhone());
