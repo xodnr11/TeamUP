@@ -6,6 +6,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig {
@@ -20,10 +22,10 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);  //내서버가 응답할때, json을 자바스크립트에서 처리할수있게 설정
-        config.addExposedHeader("");  //모든 ip에 응답을 허용하겠다.
-        config.addAllowedOrigin("");  //모든 헤더에 응답을 허용하겠다.
+        config.addExposedHeader("*");  //모든 ip에 응답을 허용하겠다.
+        config.addAllowedOrigin("*");  //모든 헤더에 응답을 허용하겠다.
         config.addAllowedMethod("*");  //모든 post, get, put, patch 요청을 허용하겠다.
-        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration("/api/", config);
         return new CorsFilter(source);
     }
 }
