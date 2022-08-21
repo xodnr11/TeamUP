@@ -29,6 +29,7 @@ public class Controller {
         return "oauth2login";
     }
 
+    //리액트 서버와 연동 테스트 메소드 (GetMapping, No Security)
     @GetMapping("/api/react_test_login")
     public ResponseEntity<?> front_login_test(@RequestParam(name = "username") String username,
                                               @RequestParam(name = "password") String password) {

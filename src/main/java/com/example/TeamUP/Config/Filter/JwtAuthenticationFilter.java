@@ -66,9 +66,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.addHeader("Authorization", "Bearer " + jwtToken.getToken());
         response.addHeader("Refresh", "Bearer "+jwtToken.getRefreshToken());
-        response.addHeader("Access-Control-Allow-Origin","*");
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Access-Control-Allow-Origin","http://localhost:3000");
+        response.addHeader("Access-Control-Allow-Credentials", String.valueOf(true));
         response.getWriter().write("login response success");
     }
 }

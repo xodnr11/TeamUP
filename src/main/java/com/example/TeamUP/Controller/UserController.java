@@ -23,7 +23,7 @@ public class UserController {
     private final UserService userService;
     private final TeamService teamService;
 
-    @PostMapping("/join")
+    @PostMapping("/api/join")
     public ResponseEntity<?> join(@RequestBody UserInfo user) {
 
         if (userService.join(user)) {

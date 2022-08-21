@@ -41,12 +41,12 @@ public class UserServiceImpl implements UserService{
         }else {
             System.out.println(userInfo);
             userInfo.setRole(Role.USER);
-            userInfo.setRefreshtoken("123123");
+            userInfo.setRefreshtoken("Not issued");
             userInfo.setEmail("123123");
-            userInfo.setGender('m');
+            userInfo.setGender('M');
             userInfo.setName("name");
-            userInfo.setNickname("niname");
-            userInfo.setPhone("0101");
+            userInfo.setNickname("nickname");
+            userInfo.setPhone("010-0000-0000");
             userInfo.setBirthday(new Date(2020-10-10));
             String rawPassword = userInfo.getPassword();
             String encPassword = passwordEncoder.encode(rawPassword);
