@@ -17,6 +17,9 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 네이버 로그인 기본 로직 연습 컨트롤러
+ */
 @Slf4j
 @org.springframework.stereotype.Controller
 public class Controller {

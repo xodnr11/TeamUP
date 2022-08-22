@@ -25,6 +25,13 @@ public class TokenController {
         return "oauth2login";
     }
 
+    /**
+     * 리프레쉬 토큰을 활용하여 엑세스 토큰과 함께 리프레쉬 토큰을 재발급 해주는 함수
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/token/refresh")
     public ResponseEntity<?> refreshAuth(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String accessToken = request.getHeader("Authorization").replace("Bearer ", "");

@@ -23,6 +23,11 @@ public class UserController {
     private final UserService userService;
     private final TeamService teamService;
 
+    /**
+     * 회원가입 매핑 함수
+     * @param user
+     * @return
+     */
     @PostMapping("/api/join")
     public ResponseEntity<?> join(@RequestBody UserInfo user) {
 
@@ -35,6 +40,11 @@ public class UserController {
 
     }
 
+    /**
+     * 회원 상세정보를 확인하는 매핑 함수
+     * @param principalDetails
+     * @return
+     */
     @GetMapping("/api/v1/user/mypage")
     @ResponseBody
     public ResponseEntity<?> userInformation(@AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -83,6 +93,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 회원정보 업데이트 기능을 동작하는 매핑 함수
+     * @param userInfo
+     * @param principalDetails
+     * @return
+     */
     @PostMapping("/api/v1/user/update")
     @ResponseBody
     public ResponseEntity<?> updateUserInformation(@RequestBody UserInfo userInfo,

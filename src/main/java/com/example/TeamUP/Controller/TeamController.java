@@ -24,6 +24,12 @@ public class TeamController {
 
     private final TeamServiceImpl teamService;
 
+    /**
+     * 게시글 작성완료 매핑 함수
+     * @param teamInfo
+     * @param principalDetails
+     * @return
+     */
     @PostMapping("/api/post/complete")
     public ResponseEntity<?> responseCreateTeam(
             @RequestBody RequestCreateTeamDTO teamInfo,
@@ -36,6 +42,12 @@ public class TeamController {
         return ResponseEntity.ok("팀 생성 완료");
     }
 
+    /**
+     * 게시글 상세내용 매핑 함수
+     * @param principalDetails
+     * @param teamId
+     * @return
+     */
     @GetMapping("/api/post")
     public ResponseEntity<?> responsePostInfo(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -46,6 +58,12 @@ public class TeamController {
         return ResponseEntity.ok(teamService.getPostInfo(userId, teamId));
     }
 
+    /**
+     * 팀 상세내용 매핑 함수
+     * @param principalDetails
+     * @param teamId
+     * @return
+     */
     @GetMapping("/api/team")
     public ResponseEntity<?> responseTeamInfo(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -56,6 +74,13 @@ public class TeamController {
         return ResponseEntity.ok(teamService.getTeamInfo(userId, teamId));
     }
 
+    /**
+     * 팀 캘린더 작성 완료 매핑함수
+     * @param principalDetails
+     * @param calendar
+     * @param teamId
+     * @return
+     */
     @PostMapping("/api/team/calendar/create")
     public ResponseEntity<?> responseCreateCalendar(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -74,6 +99,12 @@ public class TeamController {
         }
     }
 
+    /**
+     * 특정 팀에 팀원 신청 기능 동작을 위한 매핑 함수
+     * @param map
+     * @param principalDetails
+     * @return
+     */
     @PostMapping("/api/register")
     public ResponseEntity<?> registerTeam(
             @RequestBody Map<String, Object> map,
@@ -91,6 +122,11 @@ public class TeamController {
         }
     }
 
+    /**
+     * 팀장이 신청 현황을 확인하여 팀원 신청을 수락하는 매핑 함수
+     * @param map
+     * @return
+     */
     @PostMapping("/api/team/join")
     public ResponseEntity<?> responseJoinTeam(
             @RequestBody Map<String, Object> map){
@@ -108,6 +144,11 @@ public class TeamController {
         }
     }
 
+    /**
+     * 전체 게시판 출력을 위한 매핑 함수
+     * @param pageable
+     * @return
+     */
     @GetMapping("api/board")
     public ResponseEntity<?> responseBoard(
             @PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable) {
