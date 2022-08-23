@@ -22,6 +22,12 @@ public class TokenServiceImpl implements TokenService{
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
+    /**
+     * 토큰을 생성하여 발급하는 함수
+     * @param uid
+     * @param role
+     * @return
+     */
     @Override
     public Token generateToken(Long uid, String role) {
         long tokenPeriod = 1000L * 60L * 60 * 24L * 30L;                   //1달
@@ -47,6 +53,11 @@ public class TokenServiceImpl implements TokenService{
                         .sign(Algorithm.HMAC512(secretKey)));
     }
 
+    /**
+     * 요청으로 들어온 토큰이 만료되거나 서명이 정상적인지 검증하는 함수
+     * @param token
+     * @return
+     */
     @Override
     public boolean verifyToken(String token) {
         try {
@@ -61,6 +72,11 @@ public class TokenServiceImpl implements TokenService{
         }
     }
 
+    /**
+     * 토큰의 PayLoad에 저장된 Audience를 찾아오는 함수
+     * @param token
+     * @return
+     */
     @Override
     public String getUid(String token) {
         return JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token).getAudience().toString();        //getAudience로 대상자 이름 가져오기

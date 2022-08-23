@@ -3,16 +3,23 @@ package com.example.TeamUP.Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 네이버 로그인 기본 로직 연습 컨트롤러
+ */
 @Slf4j
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -25,6 +32,16 @@ public class Controller {
         return "oauth2login";
     }
 
+    //리액트 서버와 연동 테스트 메소드 (GetMapping, No Security)
+    @GetMapping("/api/react_test_login")
+    public ResponseEntity<?> front_login_test(@RequestParam(name = "username") String username,
+                                              @RequestParam(name = "password") String password) {
+        log.info(username);
+        log.info(password);
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", "응답 성공");
+        return ResponseEntity.ok(map);
+    }
     @GetMapping("/")
     public String index(Model model) {
 

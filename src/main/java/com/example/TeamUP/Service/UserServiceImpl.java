@@ -18,6 +18,12 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * 엑세스 토큰이 만료 됐을 때 리프레쉬 토큰을 활용하여 리프레쉬 토큰과 엑세스 토큰을 재발급 해주는 함수
+     * @param userId
+     * @param token
+     * @return
+     */
     @Override
     public Token updateRefreshToken(Long userId, String token) {
         System.out.println("유저 서비스의 리스레쉬 토큰 id 값 확인 : " + userId);
@@ -34,6 +40,11 @@ public class UserServiceImpl implements UserService{
         return returnToken;
     }
 
+    /**
+     * 회원가입의 기능을 동작하는 함수
+     * @param userInfo
+     * @return
+     */
     @Override
     public boolean join(UserInfo userInfo) {
         if (userRepository.existsByUsername(userInfo.getUsername())) {
@@ -41,12 +52,12 @@ public class UserServiceImpl implements UserService{
         }else {
             System.out.println(userInfo);
             userInfo.setRole(Role.USER);
-            userInfo.setRefreshtoken("123123");
+            userInfo.setRefreshtoken("Not issued");
             userInfo.setEmail("123123");
-            userInfo.setGender('m');
+            userInfo.setGender('M');
             userInfo.setName("name");
-            userInfo.setNickname("niname");
-            userInfo.setPhone("0101");
+            userInfo.setNickname("nickname");
+            userInfo.setPhone("010-0000-0000");
             userInfo.setBirthday(new Date(2020-10-10));
             String rawPassword = userInfo.getPassword();
             String encPassword = passwordEncoder.encode(rawPassword);
@@ -57,6 +68,11 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    /**
+     * 회원정보를 수정하는 기능을 동작하는 함수
+     * @param userInfo
+     * @param principalDetails
+     */
     @Override
     public void updateUserInformation(UserInfo userInfo,
                                       PrincipalDetails principalDetails) {
