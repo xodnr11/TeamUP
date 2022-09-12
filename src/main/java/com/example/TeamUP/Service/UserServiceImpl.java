@@ -53,12 +53,12 @@ public class UserServiceImpl implements UserService{
             System.out.println(userInfo);
             userInfo.setRole(Role.USER);
             userInfo.setRefreshtoken("Not issued");
-            userInfo.setEmail("123123");
-            userInfo.setGender('M');
-            userInfo.setName("name");
-            userInfo.setNickname("nickname");
-            userInfo.setPhone("010-0000-0000");
-            userInfo.setBirthday(new Date(2020-10-10));
+            userInfo.setEmail(userInfo.getEmail());
+            userInfo.setGender(userInfo.getGender());
+            userInfo.setName(userInfo.getName());
+            userInfo.setNickname(userInfo.getNickname());
+            userInfo.setPhone(userInfo.getPhone());
+            userInfo.setBirthday(userInfo.getBirthday());
             String rawPassword = userInfo.getPassword();
             String encPassword = passwordEncoder.encode(rawPassword);
             userInfo.setPassword(encPassword);

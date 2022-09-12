@@ -6,7 +6,6 @@ import org.apache.tomcat.util.json.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +26,9 @@ public class Controller {
     private String CLIENT_ID = "qhlli0LOvYNyZETvCNZc"; //애플리케이션 클라이언트 아이디값";
     private String CLI_SECRET = "t_tq8x9bmH"; //애플리케이션 클라이언트 시크릿값";
 
-    @GetMapping("/login1")
+    @GetMapping("/oauth2LoginPage")
     public String login() {
-        return "oauth2login";
+        return "Test/oauth2login";
     }
 
     //리액트 서버와 연동 테스트 메소드 (GetMapping, No Security)
