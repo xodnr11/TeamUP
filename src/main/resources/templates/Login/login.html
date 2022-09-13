@@ -26,7 +26,7 @@
                 data: JSON.stringify(userInfo),
             }).done(function (res) {
                 let todayDate = new Date();
-                todayDate.setDate(todayDate.getDate() + expiredays); // 현재 시각 + 일 단위로 쿠키 만료 날짜 변경
+                todayDate.setDate(todayDate.getDate()); // 현재 시각 + 일 단위로 쿠키 만료 날짜 변경
                 console.log(response.getResponseHeader("Authorization"));
                 window.sessionStorage.setItem("username", userInfo.username);
                 document.cookie = 'Authorization' + '=' + response.getResponseHeader("Authorization")+"Max-Age=1800; Expires=+"+todayDate+"; Path=/";
