@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보</title>
+</head>
+<body>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        console.log(sessionStorage.getItem("token"));
+        $.ajax({
+            contentType: "application/json",
+            type: "GET",
+            url: "/api/v1/user/mypage",
+            headers: {'Authorization':sessionStorage.getItem("token")},
+            dataType: "json",
+        }).done(function (res) {
+            console.log("응답 성공");
+            console.log(res);
+
+            // if (res.username !== null) {
+            //     const loginMypage = document.getElementById("login/mypage");
+            //     loginMypage.innerHTML = `<a href="/myPage" id="login/mypage">마이페이지</a>`;
+            //     const joinLogout = document.getElementById("join/logout");
+            //     joinLogout.innerHTML = `<a href="/logout" id="join/logout">로그아웃</a>`;
+            // }
+        })
+            .fail(function (res) {
+                console.log(res);
+            });
+    </script>
+
+</body>
+</html>

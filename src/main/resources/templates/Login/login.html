@@ -30,6 +30,7 @@
                 console.log(response.getResponseHeader("Authorization"));
                 window.sessionStorage.setItem("username", userInfo.username);
                 document.cookie = 'Authorization' + '=' + response.getResponseHeader("Authorization")+"Max-Age=1800; Expires=+"+todayDate+"; Path=/";
+                window.sessionStorage.setItem("token",response.getResponseHeader("Authorization"));
                 window.location.replace("/");
             })
                 .fail(function (res) {
@@ -37,7 +38,6 @@
                 });
         }
     </script>
-
 
     <center><h2>로그인</h2></center>
     <strong>아아디 : </strong>

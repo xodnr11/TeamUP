@@ -5,6 +5,7 @@ import com.example.TeamUP.Entity.UserInfo;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private UserInfo userInfo;
