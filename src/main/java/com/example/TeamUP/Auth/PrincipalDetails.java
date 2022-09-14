@@ -3,7 +3,6 @@ package com.example.TeamUP.Auth;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;

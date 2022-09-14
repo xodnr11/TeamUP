@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>내 정보</title>
@@ -7,28 +7,45 @@
 <body>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
+
         console.log(sessionStorage.getItem("token"));
         $.ajax({
             contentType: "application/json",
-            type: "GET",
-            url: "/api/v1/user/mypage",
+            type: "POST",
+            url: "/thymeleaf/myPage",
             headers: {'Authorization':sessionStorage.getItem("token")},
             dataType: "json",
         }).done(function (res) {
             console.log("응답 성공");
             console.log(res);
-
             // if (res.username !== null) {
             //     const loginMypage = document.getElementById("login/mypage");
             //     loginMypage.innerHTML = `<a href="/myPage" id="login/mypage">마이페이지</a>`;
             //     const joinLogout = document.getElementById("join/logout");
             //     joinLogout.innerHTML = `<a href="/logout" id="join/logout">로그아웃</a>`;
             // }
+            const inHtml = document.getElementById("username");
+            var username = res.id;
+            inHtml.innerHTML = username;
         })
             .fail(function (res) {
                 console.log(res);
+                alert("로그인 후 접근 가능한 페이지 입니다.");
+                window.location.replace("/loginPage");
             });
     </script>
+    <span id="username"></span>
+<!--    <table border="1">-->
+<!--        <tr>&lt;!&ndash; 첫번째 줄 시작 &ndash;&gt;-->
+<!--            <td>첫번째 칸</td>-->
+<!--            <td>두번째 칸</td>-->
+<!--        </tr>&lt;!&ndash; 첫번째 줄 끝 &ndash;&gt;-->
+<!--        <tr>&lt;!&ndash; 두번째 줄 시작 &ndash;&gt;-->
+<!--            <td>첫번째 칸</td>-->
+<!--            <td>두번째 칸</td>-->
+<!--        </tr>&lt;!&ndash; 두번째 줄 끝 &ndash;&gt;-->
+<!--    </table>-->
+
 
 </body>
 </html>
