@@ -2,7 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>네이버 아이디로 로그인</title>
+  <title>Team UP!</title>
   <style>
     pre{
       overflow: scroll;
@@ -11,7 +11,33 @@
 </head>
 </html>
 <body>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript">
+    console.log(sessionStorage.getItem("token"));
+        $.ajax({
+        contentType: "application/json",
+        type: "GET",
+        url: "/thymeleaf/getUsername",
+        headers: {'Authorization':sessionStorage.getItem("token")},
+        dataType: "json",
+      }).done(function (res) {
+          console.log("응답 성공");
+          console.log(res.username);
+          if (res.username !== null) {
+            const loginMypage = document.getElementById("login/mypage");
+            loginMypage.innerHTML = `<a href="/myPage" id="login/mypage">마이페이지</a>`;
+            const joinLogout = document.getElementById("join/logout");
+            joinLogout.innerHTML = `<a href="/logout" id="join/logout">로그아웃</a>`;
+          }
+        })
+                .fail(function (res) {
+                  console.log(res);
+                });
+  </script>
 
-<center><h1><a href="/login1">로그인 페이지로 가기</a></h1></center>
-
+  <center><h2>TeamUP!</h2></center>
+  <p><a>게시판</a></p> <hr/>
+  <p><a href="/oauth2LoginPage">SNS 로그인</a></p> <hr/>
+  <p><a id="login/mypage" href="/loginPage">일반 로그인</a></p> <hr/>
+  <p><a id="join/logout" href="/joinPage">회원가입</a></p> <hr/>
 </body>

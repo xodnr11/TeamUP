@@ -1,12 +1,15 @@
 package com.example.TeamUP.Controller;
 
+import com.example.TeamUP.Auth.PrincipalDetails;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,15 +24,39 @@ import java.util.Map;
  * 네이버 로그인 기본 로직 연습 컨트롤러
  */
 @Slf4j
+@RequiredArgsConstructor
 @org.springframework.stereotype.Controller
 public class Controller {
 
     private String CLIENT_ID = "qhlli0LOvYNyZETvCNZc"; //애플리케이션 클라이언트 아이디값";
     private String CLI_SECRET = "t_tq8x9bmH"; //애플리케이션 클라이언트 시크릿값";
 
-    @GetMapping("/login1")
+    @GetMapping("/")
+    public String index(
+            Model model,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String CALLBACK_URL = "http://localhost:8080/callback";
+
+        String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code";
+        apiURL += String.format("&client_id=%s&redirect_uri=%s&state=%s",
+                CLIENT_ID, CALLBACK_URL, 200);
+
+//        if (principalDetails != null) {
+//            System.out.println("프린시펄 널 아닐 때 계정 아이디 : " + principalDetails.getUserInfo().getUsername());
+//            model.addAttribute("username", principalDetails.getUserInfo().getUsername());
+//            System.out.println(model.toString());
+//        } else {
+//            System.out.println("프린시펄 널일 떄");
+//            model.addAttribute("username", null);
+//            System.out.println(model.toString());
+//        }
+        model.addAttribute("apiURL", apiURL);
+        return "index";
+    }
+
+    @GetMapping("/oauth2LoginPage")
     public String login() {
-        return "oauth2login";
+        return "Test/oauth2login";
     }
 
     //리액트 서버와 연동 테스트 메소드 (GetMapping, No Security)
@@ -41,27 +68,6 @@ public class Controller {
         Map<String, Object> map = new HashMap<>();
         map.put("success", "응답 성공");
         return ResponseEntity.ok(map);
-    }
-    @GetMapping("/")
-    public String index(Model model) {
-
-        String CALLBACK_URL = "http://localhost:8080/callback";
-/*
-        String apiURL ="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=qhlli0LOvYNyZETvCNZc&state=200&redirect_uri="
-                + URLEncoder.encode(CALLBACK_URL, StandardCharsets.UTF_8);
-*/
-        String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code";
-        apiURL += String.format("&client_id=%s&redirect_uri=%s&state=%s",
-                CLIENT_ID, CALLBACK_URL, 200);
-
-/*
-        RequestEntity<Void> requestEntity = RequestEntity.get(apiURL)
-                .header("MyRequestHeader", "MyValue")
-                .build();
-*/
-
-        model.addAttribute("apiURL", apiURL);
-        return "index";
     }
 
     @GetMapping("/callback")
@@ -91,7 +97,7 @@ public class Controller {
         String headerStr = "";
 
         URL url = new URL(apiURL);
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", headerStr);
 
@@ -110,13 +116,13 @@ public class Controller {
         }
 
         br.close();
-        log.info("리턴 값 확인 : "+ res);
+        log.info("리턴 값 확인 : " + res);
 
         Map<String, Object> parsedJson = new JSONParser(res.toString()).parseObject();
-        log.info("제이슨 값 확인 : "+ parsedJson);
+        log.info("제이슨 값 확인 : " + parsedJson);
         String accessToken = parsedJson.get("access_token").toString();
         access(accessToken);
-        log.info("엑세스 토큰 값 확인 : "+ accessToken);
+        log.info("엑세스 토큰 값 확인 : " + accessToken);
 
 
         //---------
@@ -131,7 +137,7 @@ public class Controller {
 
         URL url1 = new URL(apiURL1);
 
-        HttpURLConnection con1 =(HttpURLConnection)url1.openConnection();
+        HttpURLConnection con1 = (HttpURLConnection) url1.openConnection();
         con1.setRequestMethod("GET");
         con1.setRequestProperty("Authorization", headerStr);
 
@@ -150,10 +156,10 @@ public class Controller {
         }
 
         br1.close();
-        log.info("리턴 값 확인 : "+ res1);
+        log.info("리턴 값 확인 : " + res1);
 
         Map<String, Object> parsedJson1 = new JSONParser(res1.toString()).parseObject();
-        log.info("제이슨 값 확인 : "+ parsedJson1);
+        log.info("제이슨 값 확인 : " + parsedJson1);
 
     }
 }

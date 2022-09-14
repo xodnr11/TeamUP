@@ -51,7 +51,7 @@ public class TokenController {
             return ResponseEntity.ok("Token 재발급 완료");
         }else {
             log.info("리프레쉬 토큰 만료 작동 확인 리다이렉트");
-            response.sendRedirect("/login1");
+            response.sendRedirect("/loginPage");
         }
 
         return ResponseEntity.ok(" ? ");
