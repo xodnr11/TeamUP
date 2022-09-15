@@ -2,21 +2,25 @@ package com.example.TeamUP.Service;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Config.Token;
+import com.example.TeamUP.DTO.ResponseUserInfoDTO;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TeamService teamService;
 
     /**
      * 엑세스 토큰이 만료 됐을 때 리프레쉬 토큰을 활용하여 리프레쉬 토큰과 엑세스 토큰을 재발급 해주는 함수
@@ -78,5 +82,50 @@ public class UserServiceImpl implements UserService{
                                       PrincipalDetails principalDetails) {
         principalDetails.getUserInfo().setNickname(userInfo.getNickname());
         userRepository.save(principalDetails.getUserInfo());
+    }
+
+    @Override
+    public ResponseUserInfoDTO getUserInfo(UserInfo userInfo) {
+        ResponseUserInfoDTO userInfoDTO = new ResponseUserInfoDTO();
+        if (userInfo.getUsername().contains("naver")) {
+            userInfoDTO.setID("NAVER 계정으로 로그인 중");
+        } else if (userInfo.getUsername().contains("kakao")) {
+            userInfoDTO.setID("KAKAO 계정으로 로그인 중");
+        } else {
+            userInfoDTO.setID(userInfo.getUsername());
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTime(userInfo.getBirthday());
+
+        // 하루 전
+        cal.add(Calendar.DATE, +1);
+        String birthday = dateFormat.format(cal.getTime());
+        Date date = null;
+        try {
+            date = dateFormat.parse(birthday);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        userInfoDTO.setUser_name(userInfo.getName());
+        userInfoDTO.setUser_birthday(date);
+        userInfoDTO.setUser_email(userInfo.getEmail());
+        userInfoDTO.setUser_gender(userInfo.getGender());
+        userInfoDTO.setUser_phone(userInfo.getPhone());
+        userInfoDTO.setUser_nickname(userInfo.getNickname());
+
+        List<Map<String, Object>> teamList = teamService.getMyTeams(userInfo);
+
+        if (teamList != null) {
+
+            userInfoDTO.setTeam(teamList);
+            return userInfoDTO;
+        } else {
+
+            userInfoDTO.setTeam(null);
+            return userInfoDTO;
+        }
     }
 }

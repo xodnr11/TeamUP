@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 작성(팀 만들기)</title>
+</head>
+<body>
+
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript">
+    const userInfo ={
+      username : null,
+      password : null,
+      name : null,
+      nickname : null,
+      phone : null,
+      email : null,
+      gender : null,
+      birthday : null
+    }
+
+    function categoryCheck() {
+      const genderNodeList = document.getElementsByName('category');
+
+      genderNodeList.forEach((node)=>{
+        if(node.checked){
+          if(node.value === "여자"){
+            userInfo.gender = 'W';
+          }else {
+            userInfo.gender = 'M';
+          }
+        }
+      })
+    }
+
+    function createTeam() {
+      userInfo.username = document.getElementById("username").value;
+      userInfo.password = document.getElementById("password").value;
+      userInfo.name = document.getElementById("name").value;
+      userInfo.nickname = document.getElementById("nickname").value;
+      userInfo.phone = document.getElementById("phone").value;
+      userInfo.email = document.getElementById("email").value;
+      userInfo.birthday = document.getElementById("birthday").value;
+
+      console.log(userInfo);
+
+      $.ajax({
+        contentType : "application/json",
+        url: "/api/post/complete",
+        type: "POST",
+        dataType : "text",
+        data: JSON.stringify(userInfo),
+      }).done(function (res) {
+        console.log(res);
+
+      })
+              .fail(function (res){
+                console.log(res);
+              });
+    }
+  </script>
+
+  <center><h2>팀 만들기(게시글 만들기)</h2></center>
+  <strong>제목 : </strong>
+  <span><input id="title"></span>
+  <br/>
+  <strong>내용 : </strong>
+  <span><textarea id="content"></textarea></span>
+  <br/>
+  <strong>최대인원 : </strong>
+  <span><input id="max_member"></span>
+  <br/>
+  <strong>태그 : </strong>
+  <span><input id="tags"></span>
+  <br/>
+  <strong>팀 소개 : </strong>
+  <span><input id="present"></span>
+  <br/>
+  <strong>팀 이름 : </strong>
+  <span><input id="teamName"></span>
+  <br/>
+  <strong>카테고리 : </strong>
+  <span>
+      <input type="radio" name="category" value="운동" onclick="categoryCheck()">운동
+      <input type="radio" name="category" value="게임" onclick="categoryCheck()">게임
+      <input type="radio" name="category" value="스터디" onclick="categoryCheck()">스터디
+    </span>
+  <br/>
+  <P><input type="button" onclick="createTeam()" value="팀 생성"></P>
+
+
+</body>
+</html>

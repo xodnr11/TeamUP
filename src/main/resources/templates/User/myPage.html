@@ -12,21 +12,35 @@
         $.ajax({
             contentType: "application/json",
             type: "POST",
-            url: "/thymeleaf/myPage",
+            url: "/api/v1/user/mypage",
             headers: {'Authorization':sessionStorage.getItem("token")},
             dataType: "json",
         }).done(function (res) {
             console.log("응답 성공");
             console.log(res);
-            // if (res.username !== null) {
-            //     const loginMypage = document.getElementById("login/mypage");
-            //     loginMypage.innerHTML = `<a href="/myPage" id="login/mypage">마이페이지</a>`;
-            //     const joinLogout = document.getElementById("join/logout");
-            //     joinLogout.innerHTML = `<a href="/logout" id="join/logout">로그아웃</a>`;
-            // }
-            const inHtml = document.getElementById("username");
-            var username = res.id;
-            inHtml.innerHTML = username;
+            const inHtml_username = document.getElementById("username");
+            inHtml_username.innerHTML = `<a>` + res.id + `</a>`;
+
+            const inHtml_name = document.getElementById("user_name");
+            inHtml_name.innerHTML = `<a>` + res.user_name + `</a>`;
+
+            const inHtml_email = document.getElementById("user_email");
+            inHtml_email.innerHTML = `<a>` + res.user_email + `</a>`;
+
+            const inHtml_nickname = document.getElementById("user_nickname");
+            inHtml_nickname.innerHTML = `<a>` + res.user_nickname + `</a>`;
+
+            const inHtml_gender = document.getElementById("user_gender");
+            inHtml_gender.innerHTML = `<a>` + res.user_gender + `</a>`;
+
+            const inHtml_phone = document.getElementById("user_phone");
+            inHtml_phone.innerHTML = `<a>` + res.user_phone + `</a>`;
+
+            const inHtml_birthday = document.getElementById("user_birthday");
+            inHtml_birthday.innerHTML = `<a>` + res.user_birthday + `</a>`;
+
+            const inHtml_team = document.getElementById("team");
+            inHtml_team.innerHTML = `<a>`+res.team+`</a>`;
         })
             .fail(function (res) {
                 console.log(res);
@@ -34,18 +48,37 @@
                 window.location.replace("/loginPage");
             });
     </script>
+    <center><h2>내 정보</h2></center>
+    <strong>아아디 : </strong>
     <span id="username"></span>
-<!--    <table border="1">-->
-<!--        <tr>&lt;!&ndash; 첫번째 줄 시작 &ndash;&gt;-->
-<!--            <td>첫번째 칸</td>-->
-<!--            <td>두번째 칸</td>-->
-<!--        </tr>&lt;!&ndash; 첫번째 줄 끝 &ndash;&gt;-->
-<!--        <tr>&lt;!&ndash; 두번째 줄 시작 &ndash;&gt;-->
-<!--            <td>첫번째 칸</td>-->
-<!--            <td>두번째 칸</td>-->
-<!--        </tr>&lt;!&ndash; 두번째 줄 끝 &ndash;&gt;-->
-<!--    </table>-->
+    <hr/>
 
+    <strong>이름 : </strong>
+    <span id="user_name"></span>
+    <hr/>
+
+    <strong>이메일 : </strong>
+    <span id="user_email"></span>
+    <hr/>
+
+    <strong>생일 : </strong>
+    <span id="user_birthday"></span>
+    <hr/>
+
+    <strong>닉네임 : </strong>
+    <span id="user_nickname"></span>
+    <hr/>
+
+    <strong>성별 : </strong>
+    <span id="user_gender"></span>
+    <hr/>
+
+    <strong>전화번호 : </strong>
+    <span id="user_phone"></span>
+    <hr/>
+
+    <strong>팀 : </strong>
+    <span id="team"></span>
 
 </body>
 </html>
