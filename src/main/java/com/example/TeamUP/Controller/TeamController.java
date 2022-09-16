@@ -26,6 +26,7 @@ public class TeamController {
 
     /**
      * 게시글 작성완료 매핑 함수
+     *
      * @param teamInfo
      * @param principalDetails
      * @return
@@ -35,11 +36,13 @@ public class TeamController {
             @RequestBody RequestCreateTeamDTO teamInfo,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        Team team = teamService.createTeam(teamInfo, principalDetails.getUserInfo());
-
-        teamService.insertTag(team, teamInfo.getTags());
-
-        return ResponseEntity.ok("팀 생성 완료");
+        if (principalDetails != null) {
+            Team team = teamService.createTeam(teamInfo, principalDetails.getUserInfo());
+            teamService.insertTag(team, teamInfo.getTags());
+            return ResponseEntity.ok("팀 생성 완료");
+        } else {
+            return ResponseEntity.ok("미 로그인 상태");
+        }
     }
 
     /**

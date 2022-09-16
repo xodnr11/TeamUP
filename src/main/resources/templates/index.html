@@ -32,11 +32,12 @@
         })
                 .fail(function (res) {
                   console.log(res);
+                  alert("알수없는 에러가 발생하였습니다");
                 });
   </script>
 
   <center><h2>TeamUP!</h2></center>
-  <p><a>게시판</a></p> <hr/>
+  <p><a href="/board">게시판</a></p> <hr/>
   <p><a href="/oauth2LoginPage">SNS 로그인</a></p> <hr/>
   <p><a id="login/mypage" href="/loginPage">일반 로그인</a></p> <hr/>
   <p><a id="join/logout" href="/joinPage">회원가입</a></p> <hr/>

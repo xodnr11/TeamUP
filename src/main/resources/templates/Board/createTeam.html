@@ -8,15 +8,14 @@
 
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script type="text/javascript">
-    const userInfo ={
-      username : null,
-      password : null,
-      name : null,
-      nickname : null,
-      phone : null,
-      email : null,
-      gender : null,
-      birthday : null
+    const requestCreateTeamDTO ={
+      title : null,
+      content : null,
+      max_member : null,
+      tags : [],
+      category : null,
+      present : null,
+      teamName : null,
     }
 
     function categoryCheck() {
@@ -24,38 +23,47 @@
 
       genderNodeList.forEach((node)=>{
         if(node.checked){
-          if(node.value === "여자"){
-            userInfo.gender = 'W';
-          }else {
-            userInfo.gender = 'M';
+          if(node.value === "운동"){
+            requestCreateTeamDTO.category = '운동';
+          }else if (node.value === '스터디') {
+            requestCreateTeamDTO.category = '스터디';
+          } else {
+            requestCreateTeamDTO.category = '게임'
           }
         }
       })
     }
 
     function createTeam() {
-      userInfo.username = document.getElementById("username").value;
-      userInfo.password = document.getElementById("password").value;
-      userInfo.name = document.getElementById("name").value;
-      userInfo.nickname = document.getElementById("nickname").value;
-      userInfo.phone = document.getElementById("phone").value;
-      userInfo.email = document.getElementById("email").value;
-      userInfo.birthday = document.getElementById("birthday").value;
+      requestCreateTeamDTO.title = document.getElementById("title").value;
+      requestCreateTeamDTO.content = document.getElementById("content").value;
+      requestCreateTeamDTO.max_member = document.getElementById("max_member").value;
+      requestCreateTeamDTO.tags[0] = {tag : document.getElementById("tags").value};
+      requestCreateTeamDTO.present = document.getElementById("present").value;
+      requestCreateTeamDTO.teamName = document.getElementById("teamName").value;
 
-      console.log(userInfo);
+      console.log(requestCreateTeamDTO);
 
       $.ajax({
         contentType : "application/json",
         url: "/api/post/complete",
+        headers: {'Authorization':sessionStorage.getItem("token")},
         type: "POST",
         dataType : "text",
-        data: JSON.stringify(userInfo),
+        data: JSON.stringify(requestCreateTeamDTO),
       }).done(function (res) {
         console.log(res);
-
+        if (res === "미 로그인 상태") {
+          alert("로그인 게시글 생성 가능합니다");
+          window.location.replace("/loginPage");
+        }else {
+          alert("팀 생성이 완료 되었습니다");
+          window.location.replace("/board");
+        }
       })
               .fail(function (res){
                 console.log(res);
+                alert("알수없는 에러가 발생하였습니다.");
               });
     }
   </script>
@@ -63,7 +71,7 @@
   <center><h2>팀 만들기(게시글 만들기)</h2></center>
   <strong>제목 : </strong>
   <span><input id="title"></span>
-  <br/>
+  <hr/>
   <strong>내용 : </strong>
   <span><textarea id="content"></textarea></span>
   <br/>
