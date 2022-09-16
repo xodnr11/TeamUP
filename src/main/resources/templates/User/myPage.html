@@ -39,8 +39,11 @@
             const inHtml_birthday = document.getElementById("user_birthday");
             inHtml_birthday.innerHTML = `<a>` + res.user_birthday + `</a>`;
 
-            const inHtml_team = document.getElementById("team");
-            inHtml_team.innerHTML = `<a>`+res.team+`</a>`;
+
+            for(let i=0;i<res.team.length;i++){
+                const inHtml_team = document.getElementById("team");
+                inHtml_team.innerHTML += `Team Title : <a>`+res.team[i].title+`</a><br/>`;
+            }
         })
             .fail(function (res) {
                 console.log(res);
@@ -77,8 +80,8 @@
     <span id="user_phone"></span>
     <hr/>
 
-    <strong>팀 : </strong>
-    <span id="team"></span>
+    <strong>내가 속한 팀 목록</strong>
+    <div id="team"></div>
 
 </body>
 </html>
