@@ -5,10 +5,12 @@ import com.example.TeamUP.Service.UserService;
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -49,6 +51,7 @@ public class UserController {
 
     /**
      * 회원정보 업데이트 기능을 동작하는 매핑 함수
+     *
      * @param userInfo
      * @param principalDetails
      * @return
@@ -57,9 +60,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> updateUserInformation(@RequestBody UserInfo userInfo,
                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
         userService.updateUserInformation(userInfo, principalDetails);
-
         return ResponseEntity.ok("회원정보 업데이트 완료");
     }
 }

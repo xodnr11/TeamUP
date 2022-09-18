@@ -7,7 +7,6 @@ import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,15 +83,20 @@ public class UserServiceImpl implements UserService{
         userRepository.save(principalDetails.getUserInfo());
     }
 
+    /**
+     * Mypage 회원정보 출력 함수
+     * @param userInfo
+     * @return
+     */
     @Override
     public ResponseUserInfoDTO getUserInfo(UserInfo userInfo) {
         ResponseUserInfoDTO userInfoDTO = new ResponseUserInfoDTO();
         if (userInfo.getUsername().contains("naver")) {
-            userInfoDTO.setID("NAVER 계정으로 로그인 중");
+            userInfoDTO.setUsername("NAVER 계정으로 로그인 중");
         } else if (userInfo.getUsername().contains("kakao")) {
-            userInfoDTO.setID("KAKAO 계정으로 로그인 중");
+            userInfoDTO.setUsername("KAKAO 계정으로 로그인 중");
         } else {
-            userInfoDTO.setID(userInfo.getUsername());
+            userInfoDTO.setUsername(userInfo.getUsername());
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
