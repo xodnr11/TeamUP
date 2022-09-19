@@ -154,7 +154,7 @@ public class TeamController {
      */
     @GetMapping("api/board")
     public ResponseEntity<?> responseBoard(
-            @PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<Team> teamList = teamService.getTeamList(pageable);
         ResponseBoardDTO responseBoardDTO = new ResponseBoardDTO();
@@ -175,6 +175,6 @@ public class TeamController {
 
         responseBoardDTO.setPosts(posts);
 
-        return ResponseEntity.ok(responseBoardDTO);
+        return ResponseEntity.ok(teamList);
     }
 }

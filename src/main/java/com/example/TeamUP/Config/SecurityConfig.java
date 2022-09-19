@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll();
 //                .anyRequest().authenticated()                           //토큰을 필요로 한
         http.oauth2Login()
-                .loginPage("/login1")
+                .loginPage("/oauth2LoginPage")
                 .successHandler(successHandler)
                 .userInfoEndpoint().userService(oAuth2UserService);
         http.addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), userRepository,tokenService), UsernamePasswordAuthenticationFilter.class);
