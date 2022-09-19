@@ -1,29 +1,27 @@
 package com.example.TeamUP.Controller.Thymeleaf;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
-import com.example.TeamUP.DTO.ResponseUserInfoDTO;
 import com.example.TeamUP.Entity.UserInfo;
-import com.example.TeamUP.Service.TeamService;
 import com.example.TeamUP.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
 public class UserControllerThymeleaf {
     private final UserService userService;
-    private final TeamService teamService;
 
     /**
      * 로그인 페이지 매핑 함수
@@ -47,6 +45,7 @@ public class UserControllerThymeleaf {
 
     /**
      * 마이페이지 매핑함수
+     *
      * @return
      */
     @GetMapping("/myPage")
@@ -89,5 +88,20 @@ public class UserControllerThymeleaf {
             System.out.println("비로그인 상태");
             return ResponseEntity.ok(map);
         }
+    }
+
+    /**
+     * SNS 로그인 성공 시 View단의
+     * @return
+     */
+    @GetMapping("/sns")
+    public String snsLoginComplete(
+            @RequestParam(value = "authorizationToken") String authorizationToken,
+            HttpServletResponse response) throws UnsupportedEncodingException {
+        System.out.println("SNS LOGIN COMPLETE PRINT : "+authorizationToken);
+        authorizationToken = URLEncoder.encode(authorizationToken, "utf-8");
+        Cookie cookie = new Cookie("Authorization", authorizationToken);
+        response.addCookie(cookie);
+        return "Login/SnsAuthorization";
     }
 }
