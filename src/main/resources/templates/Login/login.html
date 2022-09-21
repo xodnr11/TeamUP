@@ -7,9 +7,9 @@
 <body>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
-        const userInfo ={
-            username : null,
-            password : null
+        const userInfo = {
+            username: null,
+            password: null
         }
 
         function login() {
@@ -27,7 +27,7 @@
             }).done(function (res) {
                 console.log(response.getResponseHeader("Authorization"));
                 window.sessionStorage.setItem("username", userInfo.username);
-                window.sessionStorage.setItem("token",response.getResponseHeader("Authorization"));
+                window.sessionStorage.setItem("token", response.getResponseHeader("Authorization"));
                 window.location.replace("/");
             })
                 .fail(function (res) {

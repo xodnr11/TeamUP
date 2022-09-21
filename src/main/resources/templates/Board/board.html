@@ -5,45 +5,28 @@
     <title>게시판</title>
 </head>
 <body>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type="text/javascript">
-    var teamId = null;
-
-    function goTeamDetail(value) {
-        teamId = value;
-        console.log(teamId);
-
-        $.ajax({
-            contentType : "application/json",
-            url: "/api/post/complete",
-            headers: {'Authorization':sessionStorage.getItem("token")},
-            type: "GET",
-            dataType : "text",
-            data: JSON.stringify(requestCreateTeamDTO),
-        })
-    }
-</script>
-  <center><a href="/board/create">팀 만들기(글쓰기)</a></center>
-<!--  <div th:if="${!teamList.isEmpty()}">-->
-      <table>
-          <tr>
-              <th>글 ID</th>
-              <th>제목</th>
-              <th>카테고리</th>
-              <th>현재 인원</th>
-          </tr>
-          <tr th:each="teamList : ${teamList.getContent()}">
-              <td>
-                  <form action="/board/boardDetail" method="get">
-                      <input type="hidden" name="teamId" th:value="${teamList.getId()}"/>
-                      <input type="submit" value="상세내용"/>
-                  </form>
-              </td>
-              <td th:text="${teamList.getTitle()}"></td>
-              <td th:text="${teamList.getCategory()}"></td>
-              <td th:text="${teamList.getCurrentMember()}+'/'+${teamList.getMaxMember}"></td>
-          </tr>
-      </table>
+    </script>
+    <center><a href="/board/create">팀 만들기(글쓰기)</a></center>
+    <!--  <div th:if="${!teamList.isEmpty()}">-->
+    <table>
+        <tr>
+            <th>글 ID</th>
+            <th>제목</th>
+            <th>카테고리</th>
+            <th>현재 인원</th>
+        </tr>
+        <tr th:each="teamList : ${teamList.getContent()}">
+            <td>
+                <form action="/board/boardDetail" method="get">
+                    <input type="hidden" name="teamId" th:value="${teamList.getId()}"/>
+                    <input type="submit" value="상세내용"/>
+                </form>
+            </td>
+            <td th:text="${teamList.getTitle()}"></td>
+            <td th:text="${teamList.getCategory()}"></td>
+            <td th:text="${teamList.getCurrentMember()}+'/'+${teamList.getMaxMember}"></td>
+        </tr>
+    </table>
 
 
 <!--      <nav-->

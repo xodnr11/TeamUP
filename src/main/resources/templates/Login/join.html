@@ -5,90 +5,90 @@
     <title>회원가입</title>
 </head>
 
-<body>
-  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script type="text/javascript">
-    const userInfo ={
-      username : null,
-      password : null,
-      name : null,
-      nickname : null,
-      phone : null,
-      email : null,
-      gender : null,
-      birthday : null
-    }
-
-    function genderChk() {
-      const genderNodeList = document.getElementsByName('gender');
-
-      genderNodeList.forEach((node)=>{
-        if(node.checked){
-          if(node.value === "여자"){
-            userInfo.gender = 'W';
-          }else {
-            userInfo.gender = 'M';
-          }
+    <body>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        const userInfo = {
+            username: null,
+            password: null,
+            name: null,
+            nickname: null,
+            phone: null,
+            email: null,
+            gender: null,
+            birthday: null
         }
-      })
-    }
 
-    function join() {
-      userInfo.username = document.getElementById("username").value;
-      userInfo.password = document.getElementById("password").value;
-      userInfo.name = document.getElementById("name").value;
-      userInfo.nickname = document.getElementById("nickname").value;
-      userInfo.phone = document.getElementById("phone").value;
-      userInfo.email = document.getElementById("email").value;
-      userInfo.birthday = document.getElementById("birthday").value;
+        function genderChk() {
+            const genderNodeList = document.getElementsByName('gender');
 
-      console.log(userInfo);
+            genderNodeList.forEach((node) => {
+                if (node.checked) {
+                    if (node.value === "여자") {
+                        userInfo.gender = 'W';
+                    } else {
+                        userInfo.gender = 'M';
+                    }
+                }
+            })
+        }
 
-      $.ajax({
-        contentType : "application/json",
-        url: "/thymeleaf/join",
-        type: "POST",
-        dataType : "text",
-        data: JSON.stringify(userInfo),
-      }).done(function (res) {
-        console.log(res);
-        window.location.replace("/loginPage");
-      })
-              .fail(function (res){
+        function join() {
+            userInfo.username = document.getElementById("username").value;
+            userInfo.password = document.getElementById("password").value;
+            userInfo.name = document.getElementById("name").value;
+            userInfo.nickname = document.getElementById("nickname").value;
+            userInfo.phone = document.getElementById("phone").value;
+            userInfo.email = document.getElementById("email").value;
+            userInfo.birthday = document.getElementById("birthday").value;
+
+            console.log(userInfo);
+
+            $.ajax({
+                contentType: "application/json",
+                url: "/thymeleaf/join",
+                type: "POST",
+                dataType: "text",
+                data: JSON.stringify(userInfo),
+            }).done(function (res) {
                 console.log(res);
-              });
-    }
-  </script>
+                window.location.replace("/loginPage");
+            })
+                .fail(function (res) {
+                    console.log(res);
+                });
+        }
+    </script>
 
-  <center><h2>회원가입</h2></center>
-  <strong>아아디 : </strong>
-  <span><input id="username"></span>
-  <br/>
-  <strong>비밀번호 : </strong>
-  <span><input id="password"></span>
-  <br/>
-  <strong>이름 : </strong>
-  <span><input id="name"></span>
-  <br/>
-  <strong>닉네임 : </strong>
-  <span><input id="nickname"></span>
-  <br/>
-  <strong>전화번호 : </strong>
-  <span><input id="phone"></span>
-  <br/>
-  <strong>이메일 : </strong>
-  <span><input id="email"></span>
-  <br/>
-  <strong>성별 : </strong>
-  <span>
-    <input type="radio" name="gender" value="남자" onclick="genderChk()">남자
-    <input type="radio" name="gender" value="여자" onclick="genderChk()">여자
-  </span>
-  <br/>
-  <strong>생년월일 : </strong>
-  <span><input type="date" id="birthday" value="2002.02.02"></span>
+    <center><h2>회원가입</h2></center>
+    <strong>아아디 : </strong>
+    <span><input id="username"></span>
+    <br/>
+    <strong>비밀번호 : </strong>
+    <span><input id="password"></span>
+    <br/>
+    <strong>이름 : </strong>
+    <span><input id="name"></span>
+    <br/>
+    <strong>닉네임 : </strong>
+    <span><input id="nickname"></span>
+    <br/>
+    <strong>전화번호 : </strong>
+    <span><input id="phone"></span>
+    <br/>
+    <strong>이메일 : </strong>
+    <span><input id="email"></span>
+    <br/>
+    <strong>성별 : </strong>
+    <span>
+        <input type="radio" name="gender" value="남자" onclick="genderChk()">남자
+        <input type="radio" name="gender" value="여자" onclick="genderChk()">여자
+      </span>
+    <br/>
+    <strong>생년월일 : </strong>
+    <span><input type="date" id="birthday" value="2002.02.02"></span>
 
-  <P><input type="button" onclick="join()" value="회원가입"></P>
+    <P><input type="button" onclick="join()" value="회원가입"></P>
 
 </body>
 </html>
