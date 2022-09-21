@@ -5,11 +5,41 @@
     <title>팀 상세내용</title>
 </head>
 <body>
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        
-    </script>
     <center><h2>팀 상세내용</h2></center>
+
+    <strong>팀 아이디 : </strong>
+    <a th:text="${ResponsePostDTO.getTeamId()}"></a> <hr/>
+
+    <strong>제목 : </strong>
+    <a th:text="${ResponsePostDTO.getTitle()}"></a> <hr/>
+
+    <strong>내용 : </strong>
+    <a th:text="${ResponsePostDTO.getContent()}"></a> <hr/>
+
+    <strong>작성자 : </strong>
+    <a th:text="${ResponsePostDTO.getWriter()}"></a> <hr/>
+
+    <strong>현재인원/최대인원 : </strong>
+    <a th:text="${ResponsePostDTO.getCurrent_member()}+'/'+${ResponsePostDTO.getMax_member()}"></a> <hr/>
+
+    <strong>팀 가입여부 : </strong>
+    <a th:text="${ResponsePostDTO.getRegistered()}"></a>
+
+
+    <center><h3>팀 내부 인원</h3></center>
+    <hr/>
+    <table>
+        <tr>
+            <th>역할</th>
+            <th>유저 아이디</th>
+            <th>닉네임</th>
+        </tr>
+        <tr th:each="teamMemberList : ${ResponsePostDTO.team_member}">
+            <td th:text="${teamMemberList.role}"></td>
+            <td th:text="${teamMemberList.user_id}"></td>
+            <td th:text="${teamMemberList.nickname}"></td>
+        </tr>
+    </table>
 
 </body>
 </html>
