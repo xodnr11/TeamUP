@@ -91,7 +91,7 @@ public class UserControllerThymeleaf {
     }
 
     /**
-     * SNS 로그인 성공 시 View단의
+     * SNS 로그인 성공 시 View단에 토큰 값 뿌려주기 위한 매핑 함수
      * @return
      */
     @GetMapping("/sns")

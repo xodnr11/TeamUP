@@ -44,7 +44,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             log.info("카카오 오스 전체 값 확인 " + oAuth2UserInfo.toString());
             log.info("카카오 로그인 중");
         } else {
-            log.info("이게 작동 ?");
+            log.info("전체 엘스문 작동");
         }
 
         log.info("겟 젠더 확인 "+oAuth2UserInfo.getGender());

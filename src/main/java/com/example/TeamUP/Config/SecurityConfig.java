@@ -1,5 +1,6 @@
 package com.example.TeamUP.Config;
 
+import com.example.TeamUP.Auth.OAuth2SuccessHandler;
 import com.example.TeamUP.Config.Filter.JwtAuthenticationFilter;
 import com.example.TeamUP.Config.Filter.JwtAuthorizationFilter;
 import com.example.TeamUP.Repository.UserRepository;

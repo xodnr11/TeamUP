@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
+    @EntityGraph(attributePaths = {"userInfo"}, type = EntityGraph.EntityGraphType.LOAD)
+//    @Query(value = "select t from Team t join fetch t.userInfo")
     Optional<Team> findById(Long teamId);
 
     @EntityGraph(attributePaths = {"userInfo"}, type = EntityGraph.EntityGraphType.LOAD)

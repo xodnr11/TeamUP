@@ -56,7 +56,11 @@ public class TeamController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam("teamId") Long teamId){
 
-        Long userId = principalDetails.getUserInfo().getId();
+        Long userId = null;
+
+        if (principalDetails != null) {
+             userId = principalDetails.getUserInfo().getId();
+        }
 
         return ResponseEntity.ok(teamService.getPostInfo(userId, teamId));
     }

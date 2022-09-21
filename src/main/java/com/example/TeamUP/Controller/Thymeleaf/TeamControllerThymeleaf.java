@@ -1,5 +1,6 @@
 package com.example.TeamUP.Controller.Thymeleaf;
 
+import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.ResponseBoardDTO;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Service.TeamService;
@@ -9,9 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +28,14 @@ public class TeamControllerThymeleaf {
 
     /**
      * 게시판 pageable 매핑 함수
+     *
      * @param pageable
      * @param model
      * @return
      */
     @GetMapping("/board")
     public String responseBoard(
-            @PageableDefault(size = 10, sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             Model model) {
 
         Page<Team> teamList = teamService.getTeamList(pageable);
@@ -58,10 +62,28 @@ public class TeamControllerThymeleaf {
 
     /**
      * 게시글 작성 화면 매핑 함수
+     *
      * @return
      */
     @GetMapping("/board/create")
     public String boardCreate() {
         return "Board/createTeam";
+    }
+
+    @GetMapping("/board/boardDetail")
+    public String boardDetail(
+            Model model,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(value = "teamId", required = false) Long teamId) {
+
+        Long userId = null;
+
+        if (principalDetails != null) {
+            userId = principalDetails.getUserInfo().getId();
+        }
+
+        model.addAttribute("ResponsePostDTO", teamService.getPostInfo(userId, teamId));
+        System.out.println(model.toString());
+        return "Board/boardDetail";
     }
 }

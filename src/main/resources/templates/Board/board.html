@@ -5,72 +5,95 @@
     <title>게시판</title>
 </head>
 <body>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+    var teamId = null;
+
+    function goTeamDetail(value) {
+        teamId = value;
+        console.log(teamId);
+
+        $.ajax({
+            contentType : "application/json",
+            url: "/api/post/complete",
+            headers: {'Authorization':sessionStorage.getItem("token")},
+            type: "GET",
+            dataType : "text",
+            data: JSON.stringify(requestCreateTeamDTO),
+        })
+    }
+</script>
   <center><a href="/board/create">팀 만들기(글쓰기)</a></center>
-
-
-  <div th:if="${!teamList.isEmpty()}">
-
+<!--  <div th:if="${!teamList.isEmpty()}">-->
       <table>
           <tr>
-              <th></th>
-              <th>글 번호</th>
+              <th>글 ID</th>
               <th>제목</th>
-              <th>작성자</th>
+              <th>카테고리</th>
+              <th>현재 인원</th>
           </tr>
           <tr th:each="teamList : ${teamList.getContent()}">
+              <td>
+                  <form action="/board/boardDetail" method="get">
+                      <input type="hidden" name="teamId" th:value="${teamList.getId()}"/>
+                      <input type="submit" value="상세내용"/>
+                  </form>
+              </td>
               <td th:text="${teamList.getTitle()}"></td>
               <td th:text="${teamList.getCategory()}"></td>
-              <td th:text="${teamList.getCurrentMember()}"></td>
+              <td th:text="${teamList.getCurrentMember()}+'/'+${teamList.getMaxMember}"></td>
           </tr>
       </table>
-      <nav
-              th:with="
-                pageNumber = ${teamList.pageable.pageNumber},
-                pageSize = ${teamList.pageable.pageSize},
-                totalPages = ${teamList.totalPages},
-                startPage = ${T(Math).floor(pageNumber / pageSize) * pageSize + 1},
-                tempEndPage = ${startPage + pageSize - 1},
-                endPage = (${tempEndPage > totalPages ? totalPages : tempEndPage})"
-              aria-label="Page navigation"
-      >
-          <ul class="pagination ">
 
-              <li th:classappend="${pageNumber + 1 <= pageSize + 1} ? 'disabled'" class="page-item">
-                  <a class="page-link" th:href="@{/board(page=1)}">
-                      <span>&laquo;</span>
-                      <span class="sr-only">First</span>
-                  </a>
-              </li>
 
-              <li th:classappend="${teamList.first} ? 'disabled'" class="page-item">
-                  <a class="page-link" th:href="${teamList.first} ? '#' : @{/board(page=${#numbers.formatDecimal(startPage - pageSize, 0, -1)})}" aria-label="Previous">
-                      <!-- 개인적으로 int 로 변환하는 법을 몰라서 이렇게 길어졌습니다 -->
-                      <span aria-hidden="true">&lt;</span>
-                      <span class="sr-only">Previous</span>
-                  </a>
-              </li>
+<!--      <nav-->
+<!--              th:with="-->
+<!--                pageNumber = ${teamList.pageable.pageNumber},-->
+<!--                pageSize = ${teamList.pageable.pageSize},-->
+<!--                totalPages = ${teamList.totalPages},-->
+<!--                startPage = ${T(Math).floor(pageNumber / pageSize) * pageSize + 1},-->
+<!--                tempEndPage = ${startPage + pageSize - 1},-->
+<!--                endPage = (${tempEndPage > totalPages ? totalPages : tempEndPage})"-->
+<!--              aria-label="Page navigation"-->
+<!--      >-->
+<!--          <ul class="pagination ">-->
 
-              <li th:each="page: ${#numbers.sequence(startPage, endPage)}" th:classappend="${page == pageNumber + 1} ? 'active'" class="page-item">
-                  <a th:text="${page}" class="page-link" th:href="@{/board(page=${page})}"></a>
-              </li>
+<!--              <li th:classappend="${pageNumber + 1 <= pageSize + 1} ? 'disabled'" class="page-item">-->
+<!--                  <a class="page-link" th:href="@{/board(page=1)}">-->
+<!--                      <span>&laquo;</span>-->
+<!--                      <span class="sr-only">First</span>-->
+<!--                  </a>-->
+<!--              </li>-->
 
-              <li th:classappend="${teamList.last} ? 'disabled'" class="page-item">
-                  <a class="page-link" th:href="${teamList.last} ? '#' : @{/board(page=${#numbers.formatDecimal(startPage + pageSize, 0, -1)})}" aria-label="Next">
-                      <span aria-hidden="true">&gt;</span>
-                      <span class="sr-only">Next</span>
-                  </a>
-              </li>
+<!--              <li th:classappend="${teamList.first} ? 'disabled'" class="page-item">-->
+<!--                  <a class="page-link" th:href="${teamList.first} ? '#' : @{/board(page=${#numbers.formatDecimal(startPage - pageSize, 0, -1)})}" aria-label="Previous">-->
+<!--                      &lt;!&ndash; 개인적으로 int 로 변환하는 법을 몰라서 이렇게 길어졌습니다 &ndash;&gt;-->
+<!--                      <span aria-hidden="true">&lt;</span>-->
+<!--                      <span class="sr-only">Previous</span>-->
+<!--                  </a>-->
+<!--              </li>-->
 
-              <li th:classappend=" ${T(Math).floor(totalPages/10)*10 <= startPage} ? 'disabled'" class="page-item">
-                  <a class="page-link" th:href="@{/board(page=${totalPages})}">
-                      <span>&raquo;</span>
-                      <span class="sr-only">First</span>
-                  </a>
-              </li>
+<!--              <li th:each="page: ${#numbers.sequence(startPage, endPage)}" th:classappend="${page == pageNumber + 1} ? 'active'" class="page-item">-->
+<!--                  <a th:text="${page}" class="page-link" th:href="@{/board(page=${page})}"></a>-->
+<!--              </li>-->
 
-          </ul>
-      </nav>
-  </div>
+<!--              <li th:classappend="${teamList.last} ? 'disabled'" class="page-item">-->
+<!--                  <a class="page-link" th:href="${teamList.last} ? '#' : @{/board(page=${#numbers.formatDecimal(startPage + pageSize, 0, -1)})}" aria-label="Next">-->
+<!--                      <span aria-hidden="true">&gt;</span>-->
+<!--                      <span class="sr-only">Next</span>-->
+<!--                  </a>-->
+<!--              </li>-->
+
+<!--              <li th:classappend=" ${T(Math).floor(totalPages/10)*10 <= startPage} ? 'disabled'" class="page-item">-->
+<!--                  <a class="page-link" th:href="@{/board(page=${totalPages})}">-->
+<!--                      <span>&raquo;</span>-->
+<!--                      <span class="sr-only">First</span>-->
+<!--                  </a>-->
+<!--              </li>-->
+
+<!--          </ul>-->
+<!--      </nav>-->
+<!--  </div>-->
 
 </body>
 </html>

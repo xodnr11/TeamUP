@@ -1,6 +1,7 @@
-package com.example.TeamUP.Config;
+package com.example.TeamUP.Auth;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
+import com.example.TeamUP.Config.Token;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
 import com.example.TeamUP.Service.TokenServiceImpl;
@@ -30,16 +31,16 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             throws IOException {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         String username = principalDetails.getUserInfo().getUsername();
-
-        UserInfo userInfo = userRepository.findByUsername(username);
-        log.info("유저인포 값 확인 : " + userInfo);
+        log.info("데이터 베이스 담기 전 유저 정보 : " + principalDetails.getUserInfo().getNickname());
+        UserInfo userInfo = userRepository.findByUsername(username);                        //최초 로그인이 아닐 시 여기서 우리 데이터베이스의 값이 나옴
+        log.info("유저인포 확인 : " + userInfo.toString());
 
         if (userInfo == null) {
             userRepository.save(principalDetails.getUserInfo());                            // 최초 로그인이라면 회원가입 처리를 한다.
             userInfo = userRepository.findByUsername(username);
         }
 
-        principalDetails = PrincipalDetails
+        principalDetails = PrincipalDetails                                                 //최초 로그인, 최초 로그인 아닌경우 전부 PrincipalDetail에 담기
                 .builder()
                 .userInfo(userInfo)
                 .build();
@@ -51,7 +52,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         Token token = tokenService.generateToken(principalDetails.getUserInfo().getId(), "ROLE_USER");                   //토큰 생성
         log.info("{}", token);                                                                       //토큰 값 확인
         userInfo.setRefreshtoken(token.getRefreshToken());                                          //리프레쉬 토큰 유저정보 저장
-        log.info("업데이트 전 유저인포 값 확인 : " + userInfo);
+        log.info("업데이트 전 유저인포 값 확인 : " + userInfo.getNickname());
         userRepository.save(userInfo);                                                              //유저정보 리프레쉬 토큰 포함 업데이트
             writeTokenResponse(response, token);                                                         //토큰 전달(?)
     }
