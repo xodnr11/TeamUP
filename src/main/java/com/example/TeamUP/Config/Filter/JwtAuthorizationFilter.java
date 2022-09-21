@@ -50,8 +50,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             System.out.println("서명이 정상적");
             String userid = tokenService.getUid(jwtToken).replace("[", "");
             userid = userid.replace("]", "");
+            System.out.println(userid);
             Optional<UserInfo> user = userRepository.findById(Long.valueOf(userid));
-
+            System.out.println(user);
             // JWT 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 만들어 준다.
             PrincipalDetails principalDetails = new PrincipalDetails(user.get());
             Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());

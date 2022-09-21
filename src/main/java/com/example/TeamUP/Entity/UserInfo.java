@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,6 +18,9 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "userInfo",fetch = FetchType.LAZY)
+    private List<Team> team;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -52,7 +56,9 @@ public class UserInfo {
     private String refreshtoken;
 
     @Builder
-    public UserInfo(String username,String password, char gender, String nickname, String email, String name, String phone, Date birthday, Role role, String refreshtoken) {
+    public UserInfo(Long id, List<Team> team, String username, String password, char gender, String nickname, String email, String name, String phone, Date birthday, Role role, String refreshtoken) {
+        this.id = id;
+        this.team = team;
         this.username = username;
         this.password = password;
         this.gender = gender;

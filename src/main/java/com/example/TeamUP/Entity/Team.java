@@ -1,19 +1,32 @@
 package com.example.TeamUP.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class Team extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userInfo")
     private UserInfo userInfo;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<TeamMember> teamMember;
 
     @Column(name = "title")
     private String title;

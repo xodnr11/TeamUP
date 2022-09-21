@@ -13,7 +13,6 @@
 <body>
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script type="text/javascript">
-    console.log(sessionStorage.getItem("token"));
         $.ajax({
         contentType: "application/json",
         type: "GET",
@@ -24,6 +23,7 @@
           console.log("응답 성공");
           console.log(res.username);
           if (res.username !== null) {
+            sessionStorage.setItem("username",res.username);
             const loginMypage = document.getElementById("login/mypage");
             loginMypage.innerHTML = `<a href="/myPage" id="login/mypage">마이페이지</a>`;
             const joinLogout = document.getElementById("join/logout");

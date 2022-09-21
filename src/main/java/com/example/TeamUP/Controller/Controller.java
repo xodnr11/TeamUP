@@ -42,13 +42,9 @@ public class Controller {
                 CLIENT_ID, CALLBACK_URL, 200);
 
 //        if (principalDetails != null) {
-//            System.out.println("프린시펄 널 아닐 때 계정 아이디 : " + principalDetails.getUserInfo().getUsername());
-//            model.addAttribute("username", principalDetails.getUserInfo().getUsername());
-//            System.out.println(model.toString());
+//            System.out.println("프린시펄 널 아닐 때 계정 닉네임 : " + principalDetails.getUserInfo().getNickname());
 //        } else {
 //            System.out.println("프린시펄 널일 떄");
-//            model.addAttribute("username", null);
-//            System.out.println(model.toString());
 //        }
         model.addAttribute("apiURL", apiURL);
         return "index";
@@ -129,7 +125,7 @@ public class Controller {
         //토큰으로 프로필 받기
 
         return "callback";
-    }
+     }
 
     public void access(String accessToken) throws IOException, ParseException {
         String apiURL1 = "https://openapi.naver.com/v1/nid/me";

@@ -148,7 +148,7 @@ public class TeamServiceImpl implements TeamService{
     public ResponsePostDTO getPostInfo(Long id, Long teamId) {
 
         Optional<Team> team = teamRepository.findById(teamId);
-        String writer = userRepository.findById(team.get().getUserInfo().getId()).get().getNickname();
+        String writer = team.get().getUserInfo().getNickname();
         ResponsePostDTO responsePostDTO = new ResponsePostDTO();
 
         boolean registered = false;
@@ -365,7 +365,6 @@ public class TeamServiceImpl implements TeamService{
     public List<Map<String, Object>> getMyTeams(UserInfo userInfo) {
 
         List<TeamMember> myTeams = teamMemberRepository.findByUserInfo(userInfo);
-
         List<Map<String, Object>> teamList = new ArrayList<>();
 
         if (myTeams != null) {
