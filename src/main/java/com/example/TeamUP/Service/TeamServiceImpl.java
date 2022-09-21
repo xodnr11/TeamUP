@@ -365,7 +365,6 @@ public class TeamServiceImpl implements TeamService{
     public List<Map<String, Object>> getMyTeams(UserInfo userInfo) {
 
         List<TeamMember> myTeams = teamMemberRepository.findByUserInfo(userInfo);
-
         List<Map<String, Object>> teamList = new ArrayList<>();
 
         if (myTeams != null) {
