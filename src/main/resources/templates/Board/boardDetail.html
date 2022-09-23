@@ -5,64 +5,93 @@
     <title>팀 상세내용</title>
 </head>
 <body>
+
+    <center><h2>팀 상세내용</h2></center>
+
+    <strong>팀 아이디 : </strong>
+    <input type="hidden" id="teamId" th:value="${teamId}" th:text="${teamId}">
+    <hr/>
+
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
+        function apiRegister() {
+            //작성 필요
+        }
+
         $.ajax({
             contentType: "application/json",
-            url: "/thymeleaf/getUsername",
+            url: "/api/post?teamId="+document.getElementById("teamId").value,
             headers: {'Authorization': sessionStorage.getItem("token")},
             type: "GET",
             dataType: "json",
         }).done(function (res) {
             console.log(res);
-            console.log(res.username);
-            if (res.username === null) {
-                console.log("로그인 상태 아님");
-            }else {
-                console.log("로그인 상태임");
+            const inHtml_registered = document.getElementById("registered");
+            if (res.registered === false) {
+                inHtml_registered.innerHTML = `<input value="팀 가입 신청하기" type="button" onclick="apiRegister()">`;
+            } else {
+                inHtml_registered.innerHTML = `<p>해당 팀의 팀원입니다 :)</p>`;
+            }
+
+            const inHtml_title = document.getElementById("title");
+            inHtml_title.innerHTML = `<a>` + res.title + `</a>`;
+
+            const inHtml_content = document.getElementById("content");
+            inHtml_content.innerHTML = `<a>` + res.title + `</a>`;
+
+            const inHtml_writer = document.getElementById("writer");
+            inHtml_writer.innerHTML = `<a>` + res.title + `</a>`;
+
+            const inHtml_memberCnt = document.getElementById("memberCnt");
+            inHtml_memberCnt.innerHTML = `<a>` + res.current_member +`/`+res.max_member + `</a>`;
+
+            console.log(res.team_member);
+            for (let i = 0; i < res.team_member.length; i++) {
+                console.log("for 문 작동 확인");
+                const inHtml_teamMember = document.getElementById("team_member");
+                console.log(res.team_member[i].nickname);
+                inHtml_teamMember.innerHTML += `<strong>Role</strong> : <a>` + res.team_member[i].role + `</a><br/>
+                                                <strong>UserNickname</strong> : <a>`+res.team_member[i].nickname+`</a>`;
             }
         });
     </script>
-    <center><h2>팀 상세내용</h2></center>
-
-    <strong>팀 아이디 : </strong>
-    <a th:text="${ResponsePostDTO.getTeamId()}"></a>
-    <hr/>
 
     <strong>제목 : </strong>
-    <a th:text="${ResponsePostDTO.getTitle()}"></a>
+    <a id="title"></a>
     <hr/>
 
     <strong>내용 : </strong>
-    <a th:text="${ResponsePostDTO.getContent()}"></a>
+    <a id="content"></a>
     <hr/>
 
     <strong>작성자 : </strong>
-    <a th:text="${ResponsePostDTO.getWriter()}"></a>
+    <a id="writer"></a>
     <hr/>
 
     <strong>현재인원/최대인원 : </strong>
-    <a th:text="${ResponsePostDTO.getCurrent_member()}+'/'+${ResponsePostDTO.getMax_member()}"></a>
+    <a id="memberCnt"></a>
     <hr/>
 
-    <strong>팀 가입여부 : </strong>
-    <a th:text="${ResponsePostDTO.getRegistered()}"></a>
-
+    <div id="registered">
+        <input value="팀 가입 신청하기" type="button" onclick="">
+    </div>
 
     <center><h3>팀 내부 인원</h3></center>
-    <hr/>
-    <table>
-        <tr>
-            <th>역할</th>
-            <th>유저 아이디</th>
-            <th>닉네임</th>
-        </tr>
-        <tr th:each="teamMemberList : ${ResponsePostDTO.team_member}">
-            <td th:text="${teamMemberList.role}"></td>
-            <td th:text="${teamMemberList.user_id}"></td>
-            <td th:text="${teamMemberList.nickname}"></td>
-        </tr>
-    </table>
+    <div id="team_member"></div>
+
+<!--    <hr/>-->
+<!--    <table>-->
+<!--        <tr>-->
+<!--            <th>역할</th>-->
+<!--            <th>유저 아이디</th>-->
+<!--            <th>닉네임</th>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--        </tr>-->
+<!--    </table>-->
 
 </body>
 </html>

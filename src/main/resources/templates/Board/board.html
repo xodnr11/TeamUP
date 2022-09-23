@@ -5,6 +5,20 @@
     <title>게시판</title>
 </head>
 <body>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        function goBoardDetail(value) {
+            console.log(value);
+            $.ajax({
+                contentType: "application/json",
+                url: "/",
+                type: "GET",
+                dataType: "text",
+            }).done(function (res) {
+                console.log(res);
+                window.location.replace("/board/boardDetail?teamId="+value);
+            });
+        }
     </script>
     <center><a href="/board/create">팀 만들기(글쓰기)</a></center>
     <!--  <div th:if="${!teamList.isEmpty()}">-->
@@ -16,12 +30,7 @@
             <th>현재 인원</th>
         </tr>
         <tr th:each="teamList : ${teamList.getContent()}">
-            <td>
-                <form action="/board/boardDetail" method="get">
-                    <input type="hidden" name="teamId" th:value="${teamList.getId()}"/>
-                    <input type="submit" value="상세내용"/>
-                </form>
-            </td>
+            <td><input type="button" name="teamId" th:value="${teamList.getId()}" onclick="goBoardDetail(value)"/></td>
             <td th:text="${teamList.getTitle()}"></td>
             <td th:text="${teamList.getCategory()}"></td>
             <td th:text="${teamList.getCurrentMember()}+'/'+${teamList.getMaxMember}"></td>

@@ -155,11 +155,13 @@ public class TeamServiceImpl implements TeamService{
 
         List<Map<String,Object>> memberList = getTeamMember(teamId);
         for (Map<String,Object> member : memberList){
+            System.out.println("팀에 속한 멤버 아이디"+member.get("user_id"));
             if (member.get("user_id").equals(id)) {
                 registered = true;
                 break;
             }
         }
+        System.out.println("현재 로그인 사용자 아이디 : "+id);
 
         responsePostDTO.setTeamId(teamId);
         responsePostDTO.setTitle(team.get().getTitle());
