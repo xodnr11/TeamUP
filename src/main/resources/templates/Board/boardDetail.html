@@ -15,7 +15,20 @@
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
         function apiRegister() {
-            //작성 필요
+            const requestTeamRegister = {
+                team_id: document.getElementById("teamId").value,
+                content: document.getElementById("registerContent").value
+            }
+            $.ajax({
+                contentType: "application/json",
+                url: "/api/register",
+                headers: {'Authorization': sessionStorage.getItem("token")},
+                type: "POST",
+                data: JSON.stringify(requestTeamRegister),
+                dataType: "text",
+            }).done(function (res) {
+                console.log(res);
+            });
         }
 
         $.ajax({
@@ -28,7 +41,8 @@
             console.log(res);
             const inHtml_registered = document.getElementById("registered");
             if (res.registered === false) {
-                inHtml_registered.innerHTML = `<input value="팀 가입 신청하기" type="button" onclick="apiRegister()">`;
+                inHtml_registered.innerHTML = `<input id="registerContent" placeholder="가입 신청 내용을 작성해주세요 !"><br/>
+                                                <input value="팀 가입 신청하기" type="button" onclick="apiRegister()">`;
             } else {
                 inHtml_registered.innerHTML = `<p>해당 팀의 팀원입니다 :)</p>`;
             }
@@ -73,7 +87,6 @@
     <hr/>
 
     <div id="registered">
-        <input value="팀 가입 신청하기" type="button" onclick="">
     </div>
 
     <center><h3>팀 내부 인원</h3></center>
