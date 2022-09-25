@@ -9,17 +9,17 @@
     <script type="text/javascript">
 
         const userInfo = {
-            id : null,
-            username : null,
-            password : null,
-            gender : null,
-            nickname : null,
-            email : null,
-            name : null,
-            phone : null,
-            birthday : null,
-            role : null,
-            refreshtoken : null,
+            id: null,
+            username: null,
+            password: null,
+            gender: null,
+            nickname: null,
+            email: null,
+            name: null,
+            phone: null,
+            birthday: null,
+            role: null,
+            refreshtoken: null,
         }
 
         function updateNickname() {
@@ -36,13 +36,13 @@
                 contentType: "application/json",
                 type: "POST",
                 url: "/api/v1/user/update",
-                headers: {'Authorization':sessionStorage.getItem("token")},
+                headers: {'Authorization': sessionStorage.getItem("token")},
                 dataType: "text",
                 data: JSON.stringify(userInfo),
             }).done(function (res) {
                 if (res === "회원정보 업데이트 완료") {
                     window.location.reload();
-                }else {
+                } else {
                     alert("알 수 없는 오류 발생");
                 }
             })
@@ -58,7 +58,7 @@
             contentType: "application/json",
             type: "POST",
             url: "/api/v1/user/mypage",
-            headers: {'Authorization':sessionStorage.getItem("token")},
+            headers: {'Authorization': sessionStorage.getItem("token")},
             dataType: "json",
         }).done(function (res) {
             console.log("응답 성공");
@@ -85,12 +85,10 @@
             const inHtml_birthday = document.getElementById("user_birthday");
             inHtml_birthday.innerHTML = `<a>` + res.user_birthday + `</a>`;
 
-            //수정된 부분
-            for(let i=0;i<res.team.length;i++){
+            for (let i = 0; i < res.team.length; i++) {
                 const inHtml_team = document.getElementById("team");
-                inHtml_team.innerHTML += `Team Title : <a>`+res.team[i].title+`</a><br/>`;
+                inHtml_team.innerHTML += `Team Title : <a>` + res.team[i].title + `</a><br/>`;
             }
-            //------
         })
             .fail(function (res) {
                 console.log(res);

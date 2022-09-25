@@ -5,11 +5,106 @@
     <title>팀 상세내용</title>
 </head>
 <body>
+
+    <center><h2>팀 상세내용</h2></center>
+
+    <strong>팀 아이디 : </strong>
+    <input type="hidden" id="teamId" th:value="${teamId}" th:text="${teamId}">
+    <hr/>
+
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
-        
+        function apiRegister() {
+            const requestTeamRegister = {
+                team_id: document.getElementById("teamId").value,
+                content: document.getElementById("registerContent").value
+            }
+            $.ajax({
+                contentType: "application/json",
+                url: "/api/register",
+                headers: {'Authorization': sessionStorage.getItem("token")},
+                type: "POST",
+                data: JSON.stringify(requestTeamRegister),
+                dataType: "text",
+            }).done(function (res) {
+                console.log(res);
+            });
+        }
+
+        $.ajax({
+            contentType: "application/json",
+            url: "/api/post?teamId="+document.getElementById("teamId").value,
+            headers: {'Authorization': sessionStorage.getItem("token")},
+            type: "GET",
+            dataType: "json",
+        }).done(function (res) {
+            console.log(res);
+            const inHtml_registered = document.getElementById("registered");
+            if (res.registered === false) {
+                inHtml_registered.innerHTML = `<input id="registerContent" placeholder="가입 신청 내용을 작성해주세요 !"><br/>
+                                                <input value="팀 가입 신청하기" type="button" onclick="apiRegister()">`;
+            } else {
+                inHtml_registered.innerHTML = `<p>해당 팀의 팀원입니다 :)</p>`;
+            }
+
+            const inHtml_title = document.getElementById("title");
+            inHtml_title.innerHTML = `<a>` + res.title + `</a>`;
+
+            const inHtml_content = document.getElementById("content");
+            inHtml_content.innerHTML = `<a>` + res.title + `</a>`;
+
+            const inHtml_writer = document.getElementById("writer");
+            inHtml_writer.innerHTML = `<a>` + res.title + `</a>`;
+
+            const inHtml_memberCnt = document.getElementById("memberCnt");
+            inHtml_memberCnt.innerHTML = `<a>` + res.current_member +`/`+res.max_member + `</a>`;
+
+            console.log(res.team_member);
+            for (let i = 0; i < res.team_member.length; i++) {
+                console.log("for 문 작동 확인");
+                const inHtml_teamMember = document.getElementById("team_member");
+                console.log(res.team_member[i].nickname);
+                inHtml_teamMember.innerHTML += `<strong>Role</strong> : <a>` + res.team_member[i].role + `</a><br/>
+                                                <strong>UserNickname</strong> : <a>`+res.team_member[i].nickname+`</a>`;
+            }
+        });
     </script>
-    <center><h2>팀 상세내용</h2></center>
+
+    <strong>제목 : </strong>
+    <a id="title"></a>
+    <hr/>
+
+    <strong>내용 : </strong>
+    <a id="content"></a>
+    <hr/>
+
+    <strong>작성자 : </strong>
+    <a id="writer"></a>
+    <hr/>
+
+    <strong>현재인원/최대인원 : </strong>
+    <a id="memberCnt"></a>
+    <hr/>
+
+    <div id="registered">
+    </div>
+
+    <center><h3>팀 내부 인원</h3></center>
+    <div id="team_member"></div>
+
+<!--    <hr/>-->
+<!--    <table>-->
+<!--        <tr>-->
+<!--            <th>역할</th>-->
+<!--            <th>유저 아이디</th>-->
+<!--            <th>닉네임</th>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+<!--        </tr>-->
+<!--    </table>-->
 
 </body>
 </html>

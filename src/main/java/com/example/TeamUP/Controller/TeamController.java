@@ -54,7 +54,7 @@ public class TeamController {
     @GetMapping("/api/post")
     public ResponseEntity<?> responsePostInfo(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam("teamId") Long teamId){
+            @RequestParam("teamId") String teamId){
 
         Long userId = null;
 
@@ -62,7 +62,7 @@ public class TeamController {
              userId = principalDetails.getUserInfo().getId();
         }
 
-        return ResponseEntity.ok(teamService.getPostInfo(userId, teamId));
+        return ResponseEntity.ok(teamService.getPostInfo(userId, Long.valueOf(teamId)));
     }
 
     /**

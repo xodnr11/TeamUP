@@ -2,8 +2,10 @@ package com.example.TeamUP.Controller.Thymeleaf;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.ResponseBoardDTO;
+import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Service.TeamService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 public class TeamControllerThymeleaf {
+
     private final TeamService teamService;
 
     /**
@@ -70,20 +73,22 @@ public class TeamControllerThymeleaf {
         return "Board/createTeam";
     }
 
+    /**
+     * 게시판 상세내용 페이지 매핑함수
+     *
+     * @return
+     */
     @GetMapping("/board/boardDetail")
-    public String boardDetail(
-            Model model,
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam(value = "teamId", required = false) Long teamId) {
-
-        Long userId = null;
-
-        if (principalDetails != null) {
-            userId = principalDetails.getUserInfo().getId();
-        }
-
-        model.addAttribute("ResponsePostDTO", teamService.getPostInfo(userId, teamId));
-        System.out.println(model.toString());
+    public String boardDetil(
+            @RequestParam("teamId") Long teamId,
+            Model model) {
+        Map<String, String> map = new HashMap<>();
+//        model.addAttribute("teamId", teamId);
+        map.put("teamId", String.valueOf(teamId));
+        model.addAllAttributes(map);
+        System.out.println("boardDetail 팀 아이디 값 :"+model.getAttribute("teamId"));
         return "Board/boardDetail";
     }
+
+
 }
