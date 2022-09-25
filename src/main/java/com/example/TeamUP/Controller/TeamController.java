@@ -3,6 +3,7 @@ package com.example.TeamUP.Controller;
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.DTO.ResponseBoardDTO;
+import com.example.TeamUP.DTO.ResponseTeamDTO;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.UserInfo;
@@ -77,8 +78,9 @@ public class TeamController {
             @RequestParam("teamId") Long teamId) {
 
         Long userId = principalDetails.getUserInfo().getId();
+        ResponseTeamDTO responseTeamDTO = teamService.getTeamInfo(userId, teamId);
 
-        return ResponseEntity.ok(teamService.getTeamInfo(userId, teamId));
+        return ResponseEntity.ok(responseTeamDTO);
     }
 
     /**

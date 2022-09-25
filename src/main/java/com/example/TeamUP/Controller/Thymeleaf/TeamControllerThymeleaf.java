@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
@@ -82,13 +83,23 @@ public class TeamControllerThymeleaf {
     public String boardDetil(
             @RequestParam("teamId") Long teamId,
             Model model) {
+
         Map<String, String> map = new HashMap<>();
-//        model.addAttribute("teamId", teamId);
         map.put("teamId", String.valueOf(teamId));
         model.addAllAttributes(map);
-        System.out.println("boardDetail 팀 아이디 값 :"+model.getAttribute("teamId"));
+
         return "Board/boardDetail";
     }
 
+    @GetMapping("/team/teamDetail")
+    public String teamDetail(
+            Model model,
+            @RequestParam("teamId") Long teamId) {
 
+        Map<String, String> map = new HashMap<>();
+        map.put("teamId", String.valueOf(teamId));
+        model.addAllAttributes(map);
+
+        return "Team/teamDetail";
+    }
 }

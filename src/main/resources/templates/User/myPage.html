@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>내 정보</title>
 </head>
 <body>
+
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
 
@@ -20,6 +21,19 @@
             birthday: null,
             role: null,
             refreshtoken: null,
+        }
+
+        function goTeamDetail(value) {
+            console.log(value);
+            $.ajax({
+                contentType: "application/json",
+                url: "/",
+                type: "GET",
+                dataType: "text",
+            }).done(function (res) {
+                console.log(res);
+                window.location.replace("/team/teamDetail?teamId="+value);
+            });
         }
 
         function updateNickname() {
@@ -87,7 +101,7 @@
 
             for (let i = 0; i < res.team.length; i++) {
                 const inHtml_team = document.getElementById("team");
-                inHtml_team.innerHTML += `Team Title : <a>` + res.team[i].title + `</a><br/>`;
+                inHtml_team.innerHTML += `Team Title : <input type="button" value="`+res.team[i].teamId+`" onclick="goTeamDetail(value)">` + res.team[i].title + `<br/>`;
             }
         })
             .fail(function (res) {
@@ -96,6 +110,7 @@
                 window.location.replace("/loginPage");
             });
     </script>
+
     <center><h2>내 정보</h2></center>
     <strong>아아디 : </strong>
     <span id="username"></span>
