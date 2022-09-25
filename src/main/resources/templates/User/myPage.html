@@ -101,7 +101,7 @@
 
             for (let i = 0; i < res.team.length; i++) {
                 const inHtml_team = document.getElementById("team");
-                inHtml_team.innerHTML += `Team Title : <input type="button" value="`+res.team[i].teamId+`" onclick="goTeamDetail(value)">` + res.team[i].title + `<br/>`;
+                inHtml_team.innerHTML += `Team Title : <input type="button" value="팀 상세내용" onclick="goTeamDetail(`+res.team[i].teamId+`)">` + res.team[i].title + `<br/>`;
             }
         })
             .fail(function (res) {

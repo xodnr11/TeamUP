@@ -20,9 +20,72 @@
             type: "GET",
             dataType: "json",
         }).done(function (res) {
+            console.log("응답 성공");
             console.log(res);
-        });
+
+            const inHtml_teamPresent = document.getElementById("team_present");     //팀 소개
+            inHtml_teamPresent.innerHTML = `<a>` + res.team_present + `</a>`;
+
+            const inHtml_teamName = document.getElementById("team_name");           //팀 이름
+            inHtml_teamName.innerHTML = `<a>` + res.team_name + `</a>`;
+
+            const inHtml_teamContent = document.getElementById("team_content");     //팀(게시글) 내용
+            inHtml_teamContent.innerHTML = `<a>` + res.content + `</a>`;
+
+            const inHtml_teamManager = document.getElementById("team_manager");     //관리자 여부
+            inHtml_teamManager.innerHTML = `<a>` + res.manager + `</a>`;
+
+            const inHtml_gender = document.getElementById("title");           //팀(게시글) 제목
+            inHtml_gender.innerHTML = `<a>` + res.title + `</a>`;
+
+            // const inHtml_calendar = document.getElementById("calendar");            //팀 일정
+            // inHtml_calendar.innerHTML = `<a>` + res.user_birthday + `</a>`;
+
+            for (let i = 0; i < res.team_member.length; i++) {                      //팀 멤버 목록
+                const inHtml_teamMember = document.getElementById("team_member");
+                inHtml_teamMember.innerHTML += `닉네임 : <a>` + res.team_member[i].nickname + `</a><br/>
+                                                역할 : `+ res.team_member[i].role + `</a><br/>`;
+            }
+
+            for (let i = 0; i < res.registers.length; i++) {                      //팀 멤버 목록
+                const inHtml_registers = document.getElementById("registers");
+                inHtml_registers.innerHTML += `닉네임 : <a>` + res.registers[i].user_nickname + `</a><br/>
+                                                포부 : `+ res.registers[i].content + `</a><br/>`;
+            }
+        })
+            .fail(function (res) {
+                console.log(res);
+                alert("로그인 후 접근 가능한 페이지 입니다.");
+                window.location.replace("/loginPage");
+            });
     </script>
 
+    <strong>팀 이름 : </strong>
+    <span id="team_name"></span>
+    <hr/>
+
+    <strong>팀 소개 : </strong>
+    <span id="team_present"></span>
+    <hr/>
+
+    <strong>게시글 제목 : </strong>
+    <span id="title"></span>
+    <hr/>
+
+    <strong>게시글 내용 : </strong>
+    <span id="team_content"></span>
+    <hr/>
+
+    <strong>팀 멤버목록 : </strong>
+    <div id="team_member"></div>
+    <hr/>
+
+    <strong>관리자 여부 : </strong>
+    <span id="team_manager"></span>
+    <hr/>
+
+    <strong>신청 현황 : </strong>
+    <div id="registers"></div>
+    <hr/>
 </body>
 </html>
