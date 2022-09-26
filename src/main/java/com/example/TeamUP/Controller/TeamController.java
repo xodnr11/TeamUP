@@ -140,8 +140,9 @@ public class TeamController {
     public ResponseEntity<?> responseJoinTeam(
             @RequestBody Map<String, Object> map){
 
-        Long teamId = Long.valueOf((String) map.get("team_id"));
-        Long userId = Long.valueOf((String) map.get("user_id"));
+        Long teamId = Long.valueOf(String.valueOf(map.get("team_id")));
+        Long userId = Long.valueOf(String.valueOf(map.get("user_id")));
+
         boolean accept = (boolean) map.get("accept");
 
         if (accept){

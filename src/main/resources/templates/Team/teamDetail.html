@@ -13,6 +13,49 @@
 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
+
+        function acceptBoolean(value,i) {
+            console.log(value, i);
+            const map = {
+                team_id: document.getElementById("teamId").value,
+                user_id: registers[i].user_id,
+                accept: null
+            }
+            if (value === true) {
+                map.accept = true;
+            }else {
+                map.accept = false;
+            }
+
+            $.ajax({
+                contentType: "application/json",
+                url: "/api/team/join",
+                type: "POST",
+                dataType: "text",
+                data:JSON.stringify(map),
+            }).done(function (res) {
+                console.log(res);
+                window.location.reload();
+            });
+        }
+
+        const registers = [{}]
+
+        function registerUserDetail(i) {
+            console.log(i);
+            console.log(registers[i]);
+
+            const inHtml_registerUserInfo = document.getElementById("registerUserInfo");           //팀 이름
+            inHtml_registerUserInfo.innerHTML = `<strong>신청자 정보</strong><br/>
+                                                <a> 닉네임 : ` + registers[i].user_nickname + `</a><br/>
+                                                <a> 이메일 : ` + registers[i].user_email + `</a><br/>
+                                                <a> 성별 : ` + registers[i].user_gender + `</a><br/>
+                                                <input type="button" value="수락하기" onclick="acceptBoolean(true, `+i+`)">
+                                                <input type="button" value="거절하기" onclick="acceptBoolean(false, `+i+`)"><hr/>`;
+
+
+        }
+
         $.ajax({
             contentType: "application/json",
             url: "/api/team?teamId="+document.getElementById("teamId").value,
@@ -49,7 +92,9 @@
 
             for (let i = 0; i < res.registers.length; i++) {                      //팀 멤버 목록
                 const inHtml_registers = document.getElementById("registers");
-                inHtml_registers.innerHTML += `닉네임 : <a>` + res.registers[i].user_nickname + `</a><br/>
+                registers[i] = res.registers[i];
+                inHtml_registers.innerHTML += `<input type="button" value="`+i+`" onclick="registerUserDetail(value)"><br/>
+                                                닉네임 : <a>` + res.registers[i].user_nickname + `</a><br/>
                                                 포부 : `+ res.registers[i].content + `</a><br/>`;
             }
         })
@@ -83,6 +128,8 @@
     <strong>관리자 여부 : </strong>
     <span id="team_manager"></span>
     <hr/>
+
+    <div id="registerUserInfo"></div>
 
     <strong>신청 현황 : </strong>
     <div id="registers"></div>
