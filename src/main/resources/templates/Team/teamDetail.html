@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>팀 상세내용</title>
+</head>
+<body>
+
+    <center><h3>팀 상세내용</h3></center>
+    <strong>팀 아이디 : </strong>
+    <input type="hidden" id="teamId" th:value="${teamId}" th:text="${teamId}">
+    <hr/>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+
+        function acceptBoolean(value,i) {
+            console.log(value, i);
+            const map = {
+                team_id: document.getElementById("teamId").value,
+                user_id: registers[i].user_id,
+                accept: null
+            }
+            if (value === true) {
+                map.accept = true;
+            }else {
+                map.accept = false;
+            }
+
+            $.ajax({
+                contentType: "application/json",
+                url: "/api/team/join",
+                type: "POST",
+                dataType: "text",
+                data:JSON.stringify(map),
+            }).done(function (res) {
+                console.log(res);
+                window.location.reload();
+            });
+        }
+
+        const registers = [{}]
+
+        function registerUserDetail(i) {
+            console.log(i);
+            console.log(registers[i]);
+
+            const inHtml_registerUserInfo = document.getElementById("registerUserInfo");           //팀 이름
+            inHtml_registerUserInfo.innerHTML = `<strong>신청자 정보</strong><br/>
+                                                <a> 닉네임 : ` + registers[i].user_nickname + `</a><br/>
+                                                <a> 이메일 : ` + registers[i].user_email + `</a><br/>
+                                                <a> 성별 : ` + registers[i].user_gender + `</a><br/>
+                                                <input type="button" value="수락하기" onclick="acceptBoolean(true, `+i+`)">
+                                                <input type="button" value="거절하기" onclick="acceptBoolean(false, `+i+`)"><hr/>`;
+
+
+        }
+
+        $.ajax({
+            contentType: "application/json",
+            url: "/api/team?teamId="+document.getElementById("teamId").value,
+            headers: {'Authorization': sessionStorage.getItem("token")},
+            type: "GET",
+            dataType: "json",
+        }).done(function (res) {
+            console.log("응답 성공");
+            console.log(res);
+
+            const inHtml_teamPresent = document.getElementById("team_present");     //팀 소개
+            inHtml_teamPresent.innerHTML = `<a>` + res.team_present + `</a>`;
+
+            const inHtml_teamName = document.getElementById("team_name");           //팀 이름
+            inHtml_teamName.innerHTML = `<a>` + res.team_name + `</a>`;
+
+            const inHtml_teamContent = document.getElementById("team_content");     //팀(게시글) 내용
+            inHtml_teamContent.innerHTML = `<a>` + res.content + `</a>`;
+
+            const inHtml_teamManager = document.getElementById("team_manager");     //관리자 여부
+            inHtml_teamManager.innerHTML = `<a>` + res.manager + `</a>`;
+
+            const inHtml_gender = document.getElementById("title");           //팀(게시글) 제목
+            inHtml_gender.innerHTML = `<a>` + res.title + `</a>`;
+
+            // const inHtml_calendar = document.getElementById("calendar");            //팀 일정
+            // inHtml_calendar.innerHTML = `<a>` + res.user_birthday + `</a>`;
+
+            for (let i = 0; i < res.team_member.length; i++) {                      //팀 멤버 목록
+                const inHtml_teamMember = document.getElementById("team_member");
+                inHtml_teamMember.innerHTML += `닉네임 : <a>` + res.team_member[i].nickname + `</a><br/>
+                                                역할 : `+ res.team_member[i].role + `</a><br/>`;
+            }
+
+            for (let i = 0; i < res.registers.length; i++) {                      //팀 멤버 목록
+                const inHtml_registers = document.getElementById("registers");
+                registers[i] = res.registers[i];
+                inHtml_registers.innerHTML += `<input type="button" value="`+i+`" onclick="registerUserDetail(value)"><br/>
+                                                닉네임 : <a>` + res.registers[i].user_nickname + `</a><br/>
+                                                포부 : `+ res.registers[i].content + `</a><br/>`;
+            }
+        })
+            .fail(function (res) {
+                console.log(res);
+                alert("로그인 후 접근 가능한 페이지 입니다.");
+                window.location.replace("/loginPage");
+            });
+    </script>
+
+    <strong>팀 이름 : </strong>
+    <span id="team_name"></span>
+    <hr/>
+
+    <strong>팀 소개 : </strong>
+    <span id="team_present"></span>
+    <hr/>
+
+    <strong>게시글 제목 : </strong>
+    <span id="title"></span>
+    <hr/>
+
+    <strong>게시글 내용 : </strong>
+    <span id="team_content"></span>
+    <hr/>
+
+    <strong>팀 멤버목록 : </strong>
+    <div id="team_member"></div>
+    <hr/>
+
+    <strong>관리자 여부 : </strong>
+    <span id="team_manager"></span>
+    <hr/>
+
+    <div id="registerUserInfo"></div>
+
+    <strong>신청 현황 : </strong>
+    <div id="registers"></div>
+    <hr/>
+</body>
+</html>
