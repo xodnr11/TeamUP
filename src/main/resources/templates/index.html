@@ -13,6 +13,25 @@
 <body>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript">
+
+        function apiLogout() {
+            $.ajax({
+                contentType: "application/json",
+                type: "POST",
+                url: "/api/logout",
+                headers: {'Authorization': sessionStorage.getItem("token")},
+                dataType: "text",
+            }).done(function (res) {
+                console.log(res);
+                sessionStorage.clear();
+                window.location.reload();
+            })
+                .fail(function (res) {
+                    console.log(res);
+                    alert("알수없는 에러가 발생하였습니다");
+                });
+        }
+
         $.ajax({
             contentType: "application/json",
             type: "GET",
@@ -24,10 +43,12 @@
             console.log(res.username);
             if (res.username !== null) {
                 sessionStorage.setItem("username", res.username);
+                const snsLogin = document.getElementById("snsLogin");
+                snsLogin.innerHTML = '';
                 const loginMypage = document.getElementById("login/mypage");
                 loginMypage.innerHTML = `<a href="/myPage" id="login/mypage">마이페이지</a>`;
                 const joinLogout = document.getElementById("join/logout");
-                joinLogout.innerHTML = `<a href="/logout" id="join/logout">로그아웃</a>`;
+                joinLogout.innerHTML = `<input type="button" onclick="apiLogout()" id="join/logout" value="로그아웃">`;
             }
         })
             .fail(function (res) {
@@ -39,10 +60,13 @@
     <center><h2>TeamUP!</h2></center>
     <p><a href="/board">게시판</a></p>
     <hr/>
-    <p><a href="/oauth2LoginPage">SNS 로그인</a></p>
-    <hr/>
+    <div id="snsLogin">
+        <a href="/oauth2LoginPage">SNS 로그인</a>
+        <hr/>
+    </div>
+
     <p><a id="login/mypage" href="/loginPage">일반 로그인</a></p>
     <hr/>
-    <p><a id="join/logout" href="/joinPage">회원가입</a></p>
+    <div id="join/logout"><a href="/joinPage">회원가입</a></div>
     <hr/>
 </body>

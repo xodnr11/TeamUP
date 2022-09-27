@@ -1,5 +1,6 @@
 package com.example.TeamUP.Config;
 
+import com.example.TeamUP.Auth.LogoutHandler;
 import com.example.TeamUP.Auth.OAuth2SuccessHandler;
 import com.example.TeamUP.Config.Filter.JwtAuthenticationFilter;
 import com.example.TeamUP.Config.Filter.JwtAuthorizationFilter;
@@ -25,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomOAuth2UserService oAuth2UserService;
     private final TokenServiceImpl tokenService;
 
+    private final LogoutHandler logoutHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -46,6 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(successHandler)
                 .userInfoEndpoint().userService(oAuth2UserService);
         http.addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), userRepository,tokenService), UsernamePasswordAuthenticationFilter.class);
-
+        http.logout()
+                .logoutUrl("/api/logout")
+                .deleteCookies("mySessionId")
+                .invalidateHttpSession(true)
+                .logoutSuccessHandler(logoutHandler);
     }
 }

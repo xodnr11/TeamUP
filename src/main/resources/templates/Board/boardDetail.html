@@ -28,6 +28,8 @@
                 dataType: "text",
             }).done(function (res) {
                 console.log(res);
+                alert(res);
+                window.location.reload();
             });
         }
 
@@ -65,7 +67,7 @@
                 const inHtml_teamMember = document.getElementById("team_member");
                 console.log(res.team_member[i].nickname);
                 inHtml_teamMember.innerHTML += `<strong>Role</strong> : <a>` + res.team_member[i].role + `</a><br/>
-                                                <strong>UserNickname</strong> : <a>`+res.team_member[i].nickname+`</a>`;
+                                                <strong>UserNickname</strong> : <a>`+res.team_member[i].nickname+`</a><br/>`;
             }
         });
     </script>
