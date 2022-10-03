@@ -40,9 +40,15 @@ public class TeamControllerThymeleaf {
     @GetMapping("/board")
     public String responseBoard(
             @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
-            Model model) {
+            Model model,
+            @RequestParam("category") String category) {
 
-        Page<Team> teamList = teamService.getTeamList(pageable);
+        Page<Team> teamList = null;
+        if (category != "") {
+            teamList = teamService.getTeamList(pageable, category);
+        } else {
+            teamList = teamService.getTeamList(pageable);
+        }
         ResponseBoardDTO responseBoardDTO = new ResponseBoardDTO();
 
         responseBoardDTO.setTotal_page(teamList.getTotalPages());       //전체 페이지
@@ -71,6 +77,7 @@ public class TeamControllerThymeleaf {
      */
     @GetMapping("/board/create")
     public String boardCreate() {
+
         return "Board/createTeam";
     }
 
@@ -91,6 +98,12 @@ public class TeamControllerThymeleaf {
         return "Board/boardDetail";
     }
 
+    /**
+     * 팀 상세내용을 확인 할 수 있는 매핑 함수
+     * @param model
+     * @param teamId
+     * @return
+     */
     @GetMapping("/team/teamDetail")
     public String teamDetail(
             Model model,

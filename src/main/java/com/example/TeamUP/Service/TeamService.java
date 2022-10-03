@@ -28,4 +28,6 @@ public interface TeamService {
     String createTeamRegister(Map<String, Object> map,UserInfo userInfo);
     List<Map<String, Object>> getMyTeams(UserInfo userInfo);
     Page<Team> getTeamList(Pageable pageable);
+
+    Page<Team> getTeamList(Pageable pageable, String category);
 }
