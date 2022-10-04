@@ -48,6 +48,7 @@ public class TeamController {
 
     /**
      * 게시글 상세내용 매핑 함수
+     *
      * @param principalDetails
      * @param teamId
      * @return
@@ -55,12 +56,12 @@ public class TeamController {
     @GetMapping("/api/post")
     public ResponseEntity<?> responsePostInfo(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam("teamId") String teamId){
+            @RequestParam("teamId") String teamId) {
 
         Long userId = null;
 
         if (principalDetails != null) {
-             userId = principalDetails.getUserInfo().getId();
+            userId = principalDetails.getUserInfo().getId();
         }
 
         return ResponseEntity.ok(teamService.getPostInfo(userId, Long.valueOf(teamId)));
@@ -68,6 +69,7 @@ public class TeamController {
 
     /**
      * 팀 상세내용 매핑 함수
+     *
      * @param principalDetails
      * @param teamId
      * @return
@@ -85,6 +87,7 @@ public class TeamController {
 
     /**
      * 팀 캘린더 작성 완료 매핑함수
+     *
      * @param principalDetails
      * @param calendar
      * @param teamId
@@ -97,11 +100,11 @@ public class TeamController {
             @RequestParam("teamId") Long teamId) {
 
         Long userId = principalDetails.getUserInfo().getId();
-        String resultCreateCalendar = teamService.createCalendar(userId,teamId,calendar);
+        String resultCreateCalendar = teamService.createCalendar(userId, teamId, calendar);
 
         if (resultCreateCalendar.equals("일정 생성 완료")) {
             return ResponseEntity.ok(resultCreateCalendar);
-        }else if(resultCreateCalendar.equals("일정 수정 완료")){
+        } else if (resultCreateCalendar.equals("일정 수정 완료")) {
             return ResponseEntity.ok(resultCreateCalendar);
         } else {
             return ResponseEntity.ok("일정 생성 권한이 없음");
@@ -110,6 +113,7 @@ public class TeamController {
 
     /**
      * 특정 팀에 팀원 신청 기능 동작을 위한 매핑 함수
+     *
      * @param map
      * @param principalDetails
      * @return
@@ -133,19 +137,20 @@ public class TeamController {
 
     /**
      * 팀장이 신청 현황을 확인하여 팀원 신청을 수락하는 매핑 함수
+     *
      * @param map
      * @return
      */
     @PostMapping("/api/team/join")
     public ResponseEntity<?> responseJoinTeam(
-            @RequestBody Map<String, Object> map){
+            @RequestBody Map<String, Object> map) {
 
         Long teamId = Long.valueOf(String.valueOf(map.get("team_id")));
         Long userId = Long.valueOf(String.valueOf(map.get("user_id")));
 
         boolean accept = (boolean) map.get("accept");
 
-        if (accept){
+        if (accept) {
             teamService.acceptMember(teamId, userId);
             return ResponseEntity.ok("수락 완료");
         } else {
@@ -156,14 +161,21 @@ public class TeamController {
 
     /**
      * 전체 게시판 출력을 위한 매핑 함수
+     *
      * @param pageable
      * @return
      */
-    @GetMapping("api/board")
+    @GetMapping("/api/board")
     public ResponseEntity<?> responseBoard(
-            @PageableDefault(sort = "createdDate",direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10,sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam("category") String category) {
 
-        Page<Team> teamList = teamService.getTeamList(pageable);
+        Page<Team> teamList = null;
+        if (category != "") {
+            teamList = teamService.getTeamList(pageable, category);
+        }else {
+            teamList = teamService.getTeamList(pageable);
+        }
         ResponseBoardDTO responseBoardDTO = new ResponseBoardDTO();
 
         responseBoardDTO.setTotal_page(teamList.getTotalPages());       //전체 페이지
@@ -184,4 +196,5 @@ public class TeamController {
 
         return ResponseEntity.ok(teamList);
     }
+
 }

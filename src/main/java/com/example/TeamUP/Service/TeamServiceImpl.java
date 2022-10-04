@@ -397,4 +397,18 @@ public class TeamServiceImpl implements TeamService{
         Page<Team> teamList = teamRepository.findAll(pageable);
         return teamList;
     }
+
+    /**
+     * 게시판에 팀 카테고리별 리스트를 보여주기 위해 전체 팀을 DB에서 찾아오는 함수
+     *
+     * @param pageable
+     * @param category
+     * @return
+     */
+    @Override
+    public Page<Team> getTeamList(Pageable pageable, String category) {
+        Page<Team> teamList = teamRepository.findByCategory(pageable, category);
+        return teamList;
+    }
+
 }

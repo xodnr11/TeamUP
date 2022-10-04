@@ -39,7 +39,6 @@ public class TokenServiceImpl implements TokenService{
         accessClaims.put("role", role);
         Claims refreshClaims = Jwts.claims().setIssuer("admin");
 
-
         return new Token(
                 JWT.create()
                         .withSubject("userInformation")

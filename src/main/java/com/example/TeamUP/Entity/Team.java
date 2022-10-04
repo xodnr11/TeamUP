@@ -25,7 +25,8 @@ public class Team extends BaseTimeEntity{
     @JoinColumn(name = "userInfo")
     private UserInfo userInfo;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<TeamMember> teamMember;
 
     @Column(name = "title")
