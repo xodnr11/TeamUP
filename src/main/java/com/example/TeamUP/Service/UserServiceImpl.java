@@ -9,6 +9,7 @@ import com.example.TeamUP.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -131,5 +132,17 @@ public class UserServiceImpl implements UserService{
             userInfoDTO.setTeam(null);
             return userInfoDTO;
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserInfo(UserInfo userInfo) {
+
+        if (!userRepository.existsById(userInfo.getId())) {
+            throw new IllegalStateException("회원정보가 없습니다");
+        }
+
+        userRepository.deleteById(userInfo.getId());
+
     }
 }

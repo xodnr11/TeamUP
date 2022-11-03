@@ -19,7 +19,7 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "userInfo",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userInfo",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Team> team;
 
     @Column(unique = true, nullable = false)

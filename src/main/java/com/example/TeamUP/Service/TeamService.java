@@ -30,4 +30,7 @@ public interface TeamService {
     Page<Team> getTeamList(Pageable pageable);
 
     Page<Team> getTeamList(Pageable pageable, String category);
+
+    void deleteTeam(Long teamId);
+
 }

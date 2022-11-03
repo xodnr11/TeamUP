@@ -7,9 +7,12 @@ import com.example.TeamUP.Entity.*;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 @Service
@@ -409,6 +412,18 @@ public class TeamServiceImpl implements TeamService{
     public Page<Team> getTeamList(Pageable pageable, String category) {
         Page<Team> teamList = teamRepository.findByCategory(pageable, category);
         return teamList;
+    }
+
+    @Override
+    @Transactional
+    public void deleteTeam(Long teamId) {
+
+        if (!teamRepository.existsById(teamId)) {
+            throw new IllegalIdentifierException("존재하지 않는 팀은 삭제할 수 없습니다.");
+        }
+
+        teamRepository.deleteById(teamId);
+
     }
 
 }
