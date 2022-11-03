@@ -47,10 +47,12 @@ class TeamServiceImplTest {
         userService.join(userInfo);
 
         RequestCreateTeamDTO requestCreateTeamDTO = new RequestCreateTeamDTO();
-        String teamTitle = "testTitle";
+        String teamTitle = "ss";
         requestCreateTeamDTO.setTitle(teamTitle);
         // when
         teamService.createTeam(requestCreateTeamDTO, userInfo);
+
+        em.clear();
 
         // then
         teamRepository.findByTitleContains(teamTitle);

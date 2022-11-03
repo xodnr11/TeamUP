@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 @SpringBootTest
-@ComponentScan(basePackages = {"com.example.TeamUp"})
 @Transactional
 class UserServiceImplTest {
 
@@ -71,8 +70,10 @@ class UserServiceImplTest {
         teamService.createTeam(requestCreateTeamDTO, userInfo);
         em.clear();
 
+        UserInfo findUserInfo = userRepository.findByUsername(username);
+
         // when
-        userService.deleteUserInfo(userInfo);
+        userService.deleteUserInfo(findUserInfo);
 
         // then
         Assertions.assertEquals(userRepository.existsByUsername(username), false);
