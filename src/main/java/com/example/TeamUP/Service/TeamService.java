@@ -32,6 +32,6 @@ public interface TeamService {
 
     Page<Team> getTeamList(Pageable pageable, String category);
 
-    void deleteTeam(Long teamId, PrincipalDetails principalDetails);
+    void deleteTeam(Long teamId, UserInfo userInfo);
 
 }

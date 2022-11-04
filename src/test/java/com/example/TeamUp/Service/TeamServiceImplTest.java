@@ -4,6 +4,7 @@ import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.TeamRepository;
+import com.example.TeamUP.Repository.UserRepository;
 import com.example.TeamUP.Service.TeamService;
 import com.example.TeamUP.Service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -27,6 +28,8 @@ class TeamServiceImplTest {
     TeamService teamService;
     @Autowired
     TeamRepository teamRepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     EntityManager em;
 
@@ -68,17 +71,19 @@ class TeamServiceImplTest {
         userInfo.setUsername(username);
         userInfo.setPassword("pass");
         userService.join(userInfo);
-
+        em.clear();
+        UserInfo firstUserInfo = userRepository.findByUsername(username);
         RequestCreateTeamDTO requestCreateTeamDTO = new RequestCreateTeamDTO();
         String teamTitle = "ss";
         requestCreateTeamDTO.setTitle(teamTitle);
-        teamService.createTeam(requestCreateTeamDTO, userInfo);
+        teamService.createTeam(requestCreateTeamDTO, firstUserInfo);
         em.clear();
 
+        UserInfo findUserInfo = userRepository.findByUsername(username);
         Team findTeam = teamRepository.findByTitleContains(teamTitle);
         Long teamId = findTeam.getId();
         //when
-        teamService.deleteTeam(teamId, null);
+        teamService.deleteTeam(teamId, findUserInfo);
 
         //then
         Assertions.assertEquals(false,teamRepository.existsById(teamId));

@@ -202,7 +202,7 @@ public class TeamController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam(value = "teamId") Long teamId) {
 
-        teamService.deleteTeam(teamId, principalDetails);
+        teamService.deleteTeam(teamId, principalDetails.getUserInfo());
 
         return ResponseEntity.ok("팀 삭제 완료");
     }

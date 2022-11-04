@@ -383,20 +383,17 @@ public class TeamServiceImpl implements TeamService{
      */
     @Override
     @Transactional
-    public void deleteTeam(Long teamId, PrincipalDetails principalDetails) {
+    public void deleteTeam(Long teamId, UserInfo userInfo) {
 
         try {
             Team findTeam = teamRepository.findById(teamId).get();
-            if (!findTeam.getUserInfo().getId().equals(principalDetails.getUserInfo().getId())) {
+            if (!findTeam.getUserInfo().getId().equals(userInfo.getId())) {
                 throw new CustomException(HttpStatus.UNAUTHORIZED, "팀장 만이 팀을 삭제할 수 있습니다");
             }
             teamRepository.deleteById(teamId);
         } catch (NoSuchElementException e) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "존재하지 않는 팀은 삭제할 수 없습니다.");
         }
-
-
-
 
     }
 
