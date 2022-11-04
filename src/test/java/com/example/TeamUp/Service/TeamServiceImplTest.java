@@ -78,7 +78,7 @@ class TeamServiceImplTest {
         Team findTeam = teamRepository.findByTitleContains(teamTitle);
         Long teamId = findTeam.getId();
         //when
-        teamService.deleteTeam(teamId);
+        teamService.deleteTeam(teamId, null);
 
         //then
         Assertions.assertEquals(false,teamRepository.existsById(teamId));

@@ -1,5 +1,6 @@
 package com.example.TeamUP.Service;
 
+import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.DTO.ResponseTeamDTO;
@@ -382,13 +383,20 @@ public class TeamServiceImpl implements TeamService{
      */
     @Override
     @Transactional
-    public void deleteTeam(Long teamId) {
+    public void deleteTeam(Long teamId, PrincipalDetails principalDetails) {
 
-        if (!teamRepository.existsById(teamId)) {
+        try {
+            Team findTeam = teamRepository.findById(teamId).get();
+            if (!findTeam.getUserInfo().getId().equals(principalDetails.getUserInfo().getId())) {
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "팀장 만이 팀을 삭제할 수 있습니다");
+            }
+            teamRepository.deleteById(teamId);
+        } catch (NoSuchElementException e) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "존재하지 않는 팀은 삭제할 수 없습니다.");
         }
 
-        teamRepository.deleteById(teamId);
+
+
 
     }
 

@@ -167,13 +167,13 @@ public class TeamController {
      */
     @GetMapping("/api/board")
     public ResponseEntity<?> responseBoard(
-            @PageableDefault(size = 10,sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam("category") String category) {
 
         Page<Team> teamList = null;
         if (category != "") {
             teamList = teamService.getTeamList(pageable, category);
-        }else {
+        } else {
             teamList = teamService.getTeamList(pageable);
         }
         ResponseBoardDTO responseBoardDTO = new ResponseBoardDTO();
@@ -197,4 +197,13 @@ public class TeamController {
         return ResponseEntity.ok(teamList);
     }
 
+    @DeleteMapping("/api/team/delete")
+    public ResponseEntity<?> deleteTeam(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(value = "teamId") Long teamId) {
+
+        teamService.deleteTeam(teamId, principalDetails);
+
+        return ResponseEntity.ok("팀 삭제 완료");
+    }
 }

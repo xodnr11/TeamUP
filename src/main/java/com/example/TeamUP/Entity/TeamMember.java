@@ -15,7 +15,7 @@ public class TeamMember {
     @ManyToOne
     private Team team;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private UserInfo userInfo;
 
     @Column(name = "role")

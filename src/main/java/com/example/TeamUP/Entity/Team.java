@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,13 +20,21 @@ public class Team extends BaseTimeEntity{
     private Long id;
 
 //    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "userInfo")
     private UserInfo userInfo;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-    private List<TeamMember> teamMember;
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TeamMember> teamMember = new ArrayList<>();
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Tag> tagList = new ArrayList<>();
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TeamRegister> teamRegisterList = new ArrayList<>();
 
     @Column(name = "title")
     private String title;

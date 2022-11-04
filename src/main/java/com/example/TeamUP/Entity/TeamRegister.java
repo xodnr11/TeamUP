@@ -15,7 +15,7 @@ public class TeamRegister extends BaseTimeEntity{
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Team team;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private UserInfo userInfo;
 
     @Column(name = "content")

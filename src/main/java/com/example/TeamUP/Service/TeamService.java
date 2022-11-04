@@ -1,5 +1,6 @@
 package com.example.TeamUP.Service;
 
+import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.DTO.ResponseTeamDTO;
@@ -31,6 +32,6 @@ public interface TeamService {
 
     Page<Team> getTeamList(Pageable pageable, String category);
 
-    void deleteTeam(Long teamId);
+    void deleteTeam(Long teamId, PrincipalDetails principalDetails);
 
 }
