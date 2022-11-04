@@ -19,4 +19,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     @EntityGraph(attributePaths = {"userInfo"},type = EntityGraph.EntityGraphType.LOAD)
     Page<Team> findByCategory(Pageable pageable, String category);
+
+    Team findByTitleContains(String title);
 }

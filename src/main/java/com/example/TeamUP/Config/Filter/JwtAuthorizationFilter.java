@@ -4,6 +4,11 @@ import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
 import com.example.TeamUP.Service.TokenServiceImpl;
+import com.example.TeamUP.exception.CustomException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.ErrorObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.NoSuchFileException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -43,7 +51,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
         String jwtToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if(jwtHeader!=null && !tokenService.verifyToken(jwtToken)){
+        if(!tokenService.verifyToken(jwtToken)){
 
             response.sendRedirect("/token/refresh");
         }else {
@@ -53,14 +61,32 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             System.out.println(userid);
             Optional<UserInfo> user = userRepository.findById(Long.valueOf(userid));
             System.out.println(user);
+
             // JWT 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 만들어 준다.
-            PrincipalDetails principalDetails = new PrincipalDetails(user.get());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+            try {
+                PrincipalDetails principalDetails = new PrincipalDetails(user.get());
+                Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 
-            //강제로 시큐리티의 세션에 접근하여 authentication 객체를 저장.
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                //강제로 시큐리티의 세션에 접근하여 authentication 객체를 저장.
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            chain.doFilter(request, response);
+                chain.doFilter(request, response);
+
+                //회원 탈퇴를 했거나 회원 정보가 없어진 상황에서 만료되지 않은 토큰을 요청할 경우
+            } catch (NoSuchElementException e) {
+                System.out.println("탈퇴한 회원의 요청");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.setCharacterEncoding("UTF-8");
+                ErrorObject errorObject = new ErrorObject(
+                        "jwt_token", "탈퇴한 회원의 토큰입니다.", HttpStatus.UNAUTHORIZED.value()
+                );
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writeValue(response.getWriter(), errorObject);
+
+            }
+
         }
     }
 }

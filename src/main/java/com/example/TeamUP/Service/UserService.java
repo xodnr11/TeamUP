@@ -14,4 +14,7 @@ public interface UserService {
     void updateUserInformation(UserInfo userInfo, @AuthenticationPrincipal PrincipalDetails principalDetails);
 
     ResponseUserInfoDTO getUserInfo(UserInfo userInfo);
+
+    void deleteUserInfo(UserInfo userInfo);
+
 }
