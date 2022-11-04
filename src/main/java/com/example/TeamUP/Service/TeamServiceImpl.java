@@ -6,10 +6,12 @@ import com.example.TeamUP.DTO.ResponseTeamDTO;
 import com.example.TeamUP.Entity.*;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Repository.*;
+import com.example.TeamUP.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +30,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 특정 팀에 합류하는 함수
-     * @param team
-     * @param userInfo
-     * @param role
      */
     @Override
     public void joinTeam(Team team, UserInfo userInfo, Role role) {
@@ -55,8 +54,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 특정 회원이 팀에 신청한 신청내용을 보고 수락의 기능을 동작하는 함수
-     * @param teamId
-     * @param userId
      */
     @Override
     public void acceptMember(Long teamId, Long userId) {
@@ -83,8 +80,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 특정 회원이 팀에 신청한 신청내용을 보고 거절의 기능을 동작하는 함수
-     * @param teamId
-     * @param userId
      */
     @Override
     public void rejectMember(Long teamId, Long userId) {
@@ -94,9 +89,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 팀을 최초로 생성하는 함수
-     * @param team
-     * @param user
-     * @return
      */
     @Override
     public Team createTeam(RequestCreateTeamDTO team, UserInfo user) {
@@ -121,8 +113,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 팀에 태그를 생성하여 저장하는 함수
-     * @param team
-     * @param rawTags
      */
     @Override
     public void insertTag(Team team, List<Map<String, String>> rawTags) {
@@ -143,9 +133,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 게시글의 상세내용을 리턴하는 함수, 어떤 회원이 조회하는지에 따라 해당 게시글의 팀에 속한 멤버인지 확인까지 가능함
-     * @param id
-     * @param teamId
-     * @return
      */
     @Override
     public ResponsePostDTO getPostInfo(Long id, Long teamId) {
@@ -180,9 +167,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 팀 상세내용에 표시될 팀 정보를 데이터베이스에서 찾아오는 함수
-     * @param userId
-     * @param teamId
-     * @return
      */
     @Override
     public ResponseTeamDTO getTeamInfo(Long userId, Long teamId) {
@@ -209,8 +193,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 팀 상세내용에 표시될 팀에 속한 멤버들을 데이터베이스에서 찾아오는 함수
-     * @param teamId
-     * @return
      */
     @Override
     public List<Map<String,Object>> getTeamMember(Long teamId) {
@@ -233,8 +215,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 팀 상세내용에 표시될 일정을 데이터베이스에서 일정을 찾아오는 함수
-     * @param teamId
-     * @return
      */
     @Override
     public List<Map<String,Object>> getTeamCalendar(Long teamId) {
@@ -255,9 +235,7 @@ public class TeamServiceImpl implements TeamService{
     }
 
     /**
-     *
-     * @param teamId
-     * @return
+     *  팀에 신청한 현황들을 반환함 (팀 상세내용)
      */
     @Override
     public List<Map<String,Object>> getTeamRegister(Long teamId) {
@@ -284,10 +262,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 팀 상세내용에 표시할 캘린더(일정)을 생성하는 함수
-     * @param userId
-     * @param teamId
-     * @param calendar
-     * @return
      */
     @Override
     public String createCalendar(Long userId, Long teamId, Calendar calendar) {//사용자 권한 인증해야함
@@ -323,9 +297,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 특정 팀에게 가입신청을 하여 데이터베이스에 저장하거나 수정하는 함수
-     * @param map
-     * @param userInfo
-     * @return
      */
     @Override
     public String createTeamRegister(Map<String, Object> map,UserInfo userInfo) {
@@ -363,8 +334,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * Mypage에서 내정보를 조회할 때 내가 속한 팀을 확인하기 위해 사용하는 함수
-     * @param userInfo
-     * @return  팀 리스트
      */
     @Override
     public List<Map<String, Object>> getMyTeams(UserInfo userInfo) {
@@ -392,8 +361,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 게시판에 팀 전체 리스트를 보여주기 위해 전체 팀을 DB에서 찾아오는 함수
-     * @param pageable
-     * @return
      */
     @Override
     public Page<Team> getTeamList(Pageable pageable) {
@@ -403,10 +370,6 @@ public class TeamServiceImpl implements TeamService{
 
     /**
      * 게시판에 팀 카테고리별 리스트를 보여주기 위해 전체 팀을 DB에서 찾아오는 함수
-     *
-     * @param pageable
-     * @param category
-     * @return
      */
     @Override
     public Page<Team> getTeamList(Pageable pageable, String category) {
@@ -414,12 +377,15 @@ public class TeamServiceImpl implements TeamService{
         return teamList;
     }
 
+    /**
+     * 존재하는 팀을 삭제하는 메서드
+     */
     @Override
     @Transactional
     public void deleteTeam(Long teamId) {
 
         if (!teamRepository.existsById(teamId)) {
-            throw new IllegalIdentifierException("존재하지 않는 팀은 삭제할 수 없습니다.");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "존재하지 않는 팀은 삭제할 수 없습니다.");
         }
 
         teamRepository.deleteById(teamId);

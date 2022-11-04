@@ -6,7 +6,9 @@ import com.example.TeamUP.DTO.ResponseUserInfoDTO;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
+import com.example.TeamUP.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,12 +136,15 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    /**
+     * 회원 삭제 기능
+     */
     @Override
     @Transactional
     public void deleteUserInfo(UserInfo userInfo) {
 
         if (!userRepository.existsById(userInfo.getId())) {
-            throw new IllegalStateException("회원정보가 없습니다");
+            throw new CustomException(HttpStatus.NOT_FOUND, "회원정보가 없습니다");
         }
 
         userRepository.deleteById(userInfo.getId());
