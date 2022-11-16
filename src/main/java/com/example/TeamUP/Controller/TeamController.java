@@ -3,11 +3,14 @@ package com.example.TeamUP.Controller;
 import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
 import com.example.TeamUP.DTO.ResponseBoardDTO;
+import com.example.TeamUP.DTO.ResponsePostDTO;
 import com.example.TeamUP.DTO.ResponseTeamDTO;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Service.TeamServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +19,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.*;
 
+@Api(description = "팀 관련 요청 API")
 @RestController
 @RequiredArgsConstructor
 public class TeamController {
@@ -32,6 +37,7 @@ public class TeamController {
      * @param principalDetails
      * @return
      */
+    @ApiOperation(value = "팀 생성 요청 URL")
     @PostMapping("/api/post/complete")
     public ResponseEntity<?> responseCreateTeam(
             @RequestBody RequestCreateTeamDTO teamInfo,
@@ -51,11 +57,12 @@ public class TeamController {
      *
      * @param principalDetails
      * @param teamId
-     * @return
+     * @return responsePostDTO
      */
+    @ApiOperation(value = "게시글 상세내용 요청 URL")
     @GetMapping("/api/post")
-    public ResponseEntity<?> responsePostInfo(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponsePostDTO responsePostInfo(
+            @ApiIgnore @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam("teamId") String teamId) {
 
         Long userId = null;
@@ -63,8 +70,8 @@ public class TeamController {
         if (principalDetails != null) {
             userId = principalDetails.getUserInfo().getId();
         }
-
-        return ResponseEntity.ok(teamService.getPostInfo(userId, Long.valueOf(teamId)));
+        ResponsePostDTO responsePostDTO = teamService.getPostInfo(userId, Long.valueOf(teamId));
+        return responsePostDTO;
     }
 
     /**
@@ -74,6 +81,7 @@ public class TeamController {
      * @param teamId
      * @return
      */
+    @ApiOperation(value = "팀 상세내용 요청 URL")
     @GetMapping("/api/team")
     public ResponseEntity<?> responseTeamInfo(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -197,6 +205,9 @@ public class TeamController {
         return ResponseEntity.ok(teamList);
     }
 
+    /**
+     * 팀 삭제 매핑 함수
+     */
     @DeleteMapping("/api/team/delete")
     public ResponseEntity<?> deleteTeam(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
