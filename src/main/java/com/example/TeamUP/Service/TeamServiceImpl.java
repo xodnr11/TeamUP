@@ -1,9 +1,7 @@
 package com.example.TeamUP.Service;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
-import com.example.TeamUP.DTO.RequestCreateTeamDTO;
-import com.example.TeamUP.DTO.ResponsePostDTO;
-import com.example.TeamUP.DTO.ResponseTeamDTO;
+import com.example.TeamUP.DTO.*;
 import com.example.TeamUP.Entity.*;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Repository.*;
@@ -395,6 +393,11 @@ public class TeamServiceImpl implements TeamService{
             throw new CustomException(HttpStatus.BAD_REQUEST, "존재하지 않는 팀은 삭제할 수 없습니다.");
         }
 
+    }
+
+    @Override
+    public ResponseTagsInTeam getTagsInTeam(RequestTags requestTags) {
+        return null;
     }
 
 }

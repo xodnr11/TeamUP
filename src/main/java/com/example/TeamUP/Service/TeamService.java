@@ -1,9 +1,7 @@
 package com.example.TeamUP.Service;
 
 import com.example.TeamUP.Auth.PrincipalDetails;
-import com.example.TeamUP.DTO.RequestCreateTeamDTO;
-import com.example.TeamUP.DTO.ResponsePostDTO;
-import com.example.TeamUP.DTO.ResponseTeamDTO;
+import com.example.TeamUP.DTO.*;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Entity.Role;
 import com.example.TeamUP.Entity.Team;
@@ -33,5 +31,7 @@ public interface TeamService {
     Page<Team> getTeamList(Pageable pageable, String category);
 
     void deleteTeam(Long teamId, UserInfo userInfo);
+
+    ResponseTagsInTeam getTagsInTeam(RequestTags requestTags);
 
 }
