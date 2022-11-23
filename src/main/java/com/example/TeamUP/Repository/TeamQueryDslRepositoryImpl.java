@@ -1,18 +1,18 @@
 package com.example.TeamUP.Repository;
 
-import com.example.TeamUP.Entity.Tag;
+import com.example.TeamUP.Entity.Team;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;
 
-import static com.example.TeamUP.Entity.QTag.*;
+import static com.example.TeamUP.Entity.QTeam.*;
 
-public class TagQueryDslRepositoryImpl implements TagQueryDslRepository {
 
+public class TeamQueryDslRepositoryImpl implements TeamQueryDslRepository {
     private final JPAQueryFactory queryFactory;
 
-    public TagQueryDslRepositoryImpl(JPAQueryFactory queryFactory) {
+    public TeamQueryDslRepositoryImpl(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }
 
@@ -20,24 +20,25 @@ public class TagQueryDslRepositoryImpl implements TagQueryDslRepository {
      * 들어온 태그들을 한번에 검색
      */
     @Override
-    public List<Tag> searchTagInTeam(List<String> tags) {
+    public List<Team> searchTeams(List<Long> teamIds) {
 
-        if (tags.size() > 0) {
+        if (teamIds.size() > 0) {
             return queryFactory
-                    .select(tag)
-                    .from(tag)
-                    .where(tagsNameEq(tags))
+                    .select(team)
+                    .from(team)
+                    .where(teamIdEq(teamIds))
                     .fetch();
         } else {
             return null;
         }
     }
 
-    public BooleanBuilder tagsNameEq(List<String> tags) {
+    public BooleanBuilder teamIdEq(List<Long> tags) {
         BooleanBuilder builder = new BooleanBuilder();
         for (int i = 0; i < tags.size(); i++) {
-            builder.or(tag.tagName.eq(tags.get(i)));
+            builder.or(team.id.eq(tags.get(i)));
         }
         return builder;
     }
+
 }
