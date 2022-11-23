@@ -13,7 +13,7 @@ public class Tag {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Team team;
 
     @Column(name = "tag_name")
