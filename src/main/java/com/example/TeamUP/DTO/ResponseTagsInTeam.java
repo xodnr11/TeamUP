@@ -19,6 +19,7 @@ public class ResponseTagsInTeam {
             Posts posts = new Posts();
             posts.setTeam_id((Long) maps.get(i).get("team_id"));
             posts.setTitle((String) maps.get(i).get("title"));
+            posts.setCategory((String) maps.get(i).get("category"));
             posts.setWriter((String) maps.get(i).get("writer"));
             this.posts.add(posts);
         }
@@ -29,6 +30,7 @@ public class ResponseTagsInTeam {
     public static class Posts {
         private Long team_id;
         private String title;
+        private String category;
         private String writer;
     }
 }

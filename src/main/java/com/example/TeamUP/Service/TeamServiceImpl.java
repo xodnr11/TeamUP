@@ -144,13 +144,11 @@ public class TeamServiceImpl implements TeamService{
 
         List<Map<String,Object>> memberList = getTeamMember(teamId);
         for (Map<String,Object> member : memberList){
-            System.out.println("팀에 속한 멤버 아이디"+member.get("user_id"));
             if (member.get("user_id").equals(id)) {
                 registered = true;
                 break;
             }
         }
-        System.out.println("현재 로그인 사용자 아이디 : "+id);
 
         responsePostDTO.setTeamId(teamId);
         responsePostDTO.setTitle(team.get().getTitle());
@@ -414,11 +412,23 @@ public class TeamServiceImpl implements TeamService{
             for (Tag findTag : findTags) {
                 teamIds.add(findTag.getTeam().getId());
             }
-            List<Team> findTeams = teamRepository.searchTeams(teamIds, pageable);         //페이지 쿼리로 받아야댐
+            Page<Team> findTeams = teamRepository.searchTeams(teamIds, pageable);         //페이지 쿼리로 받아야댐
             if (findTeams != null) {
+                List<Map<String, Object>> maps = new ArrayList<>();
                 for (Team findTeam : findTeams) {
-
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("team_id", findTeam.getId());
+                    map.put("title", findTeam.getTeamName());
+                    map.put("category", findTeam.getCategory());
+                    map.put("writer", findTeam.getUserInfo().getNickname());
+                    maps.add(map);
                 }
+
+                ResponseTagsInTeam responseTagsInTeam = new ResponseTagsInTeam();           //토탈 페이지 추가
+                responseTagsInTeam.setTotal_page(findTeams.getTotalPages());
+                responseTagsInTeam.addPosts(maps);
+
+                return responseTagsInTeam;
             }
         }
         return null;

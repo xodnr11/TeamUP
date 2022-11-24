@@ -7,6 +7,7 @@ import com.example.TeamUP.Repository.TeamRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -43,11 +44,12 @@ class TagQueryDslRepositoryImplTest {
                 System.out.println("findTag = " + findTag.getTeam().getId());
                 teamIds.add(findTag.getTeam().getId());
             }
-            List<Team> findTeams = teamRepository.searchTeams(teamIds, pageable);
+            Page<Team> findTeams = teamRepository.searchTeams(teamIds, pageable);
             if (findTeams != null) {
                 for (Team findTeam : findTeams) {
                     System.out.println("findTeam = " + findTeam.getTeamName());
                 }
+                System.out.println("findTeams.getTotalPages() = " + findTeams.getTotalPages());
             }
         }
 
