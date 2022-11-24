@@ -193,14 +193,17 @@ public class TeamController {
         return "팀 삭제 완료";
     }
 
+
     /**
      * 태그로 전체 게시판 검색
      */
     @ApiOperation(value = "태그로 전체 게시판 조회 URL")
     @PostMapping("/api/tags")
     public ResponseTagsInTeam tagsInTeam(
-            @RequestBody RequestTags requestTags) {
-        teamService.getTagsInTeam(requestTags);
-        return null;
+            @RequestBody RequestTags requestTags,
+            @PageableDefault(size = 10, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        ResponseTagsInTeam tagsInTeam = teamService.getTagsInTeam(requestTags, pageable);
+
+        return tagsInTeam;
     }
 }

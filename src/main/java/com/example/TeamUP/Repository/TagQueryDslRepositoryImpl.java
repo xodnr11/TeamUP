@@ -1,9 +1,7 @@
 package com.example.TeamUP.Repository;
 
-import com.example.TeamUP.Entity.QTag;
 import com.example.TeamUP.Entity.Tag;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;

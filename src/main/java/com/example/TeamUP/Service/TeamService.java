@@ -32,6 +32,6 @@ public interface TeamService {
 
     void deleteTeam(Long teamId, UserInfo userInfo);
 
-    ResponseTagsInTeam getTagsInTeam(RequestTags requestTags);
+    ResponseTagsInTeam getTagsInTeam(RequestTags requestTags, Pageable pageable);
 
 }
