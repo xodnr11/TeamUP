@@ -3,6 +3,7 @@ package com.example.TeamUP.Repository;
 import com.example.TeamUP.Entity.Team;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,12 +21,15 @@ public class TeamQueryDslRepositoryImpl implements TeamQueryDslRepository {
      * 들어온 태그들을 한번에 검색
      */
     @Override
-    public List<Team> searchTeams(List<Long> teamIds) {
+    public List<Team> searchTeams(List<Long> teamIds, Pageable pageable) {
 
         if (teamIds.size() > 0) {
             return queryFactory
                     .select(team)
                     .from(team)
+                    .orderBy(team.id.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
                     .where(teamIdEq(teamIds))
                     .fetch();
         } else {

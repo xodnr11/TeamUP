@@ -7,11 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class RequestTags {
-    private List<String> tag = new ArrayList<>();
+    private List<String> tag;
 
-    public void addTag(String tag) {
-        this.tag.add(tag);
-    }
 }

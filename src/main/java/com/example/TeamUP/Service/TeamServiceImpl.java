@@ -395,8 +395,32 @@ public class TeamServiceImpl implements TeamService{
 
     }
 
+    /**
+     * 들어온 태그로 게시물을 검색하는 메서드
+     * @param requestTags
+     * @return
+     */
     @Override
-    public ResponseTagsInTeam getTagsInTeam(RequestTags requestTags) {
+    public ResponseTagsInTeam getTagsInTeam(RequestTags requestTags, Pageable pageable) {
+        List<String> tags = new ArrayList<>();
+        for (int i = 0; i < requestTags.getTag().size(); i++) {
+            String tag = requestTags.getTag().get(i);
+            tags.add(tag);
+        }
+        List<Tag> findTags = tagRepository.searchTagInTeam(tags);
+        List<Long> teamIds = new ArrayList<>();
+
+        if (findTags != null) {
+            for (Tag findTag : findTags) {
+                teamIds.add(findTag.getTeam().getId());
+            }
+            List<Team> findTeams = teamRepository.searchTeams(teamIds, pageable);         //페이지 쿼리로 받아야댐
+            if (findTeams != null) {
+                for (Team findTeam : findTeams) {
+
+                }
+            }
+        }
         return null;
     }
 
