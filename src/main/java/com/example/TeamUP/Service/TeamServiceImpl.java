@@ -1,13 +1,11 @@
 package com.example.TeamUP.Service;
 
-import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.DTO.*;
 import com.example.TeamUP.Entity.*;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Repository.*;
 import com.example.TeamUP.exception.CustomException;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -401,8 +399,8 @@ public class TeamServiceImpl implements TeamService{
     @Override
     public ResponseTagsInTeam getTagsInTeam(RequestTags requestTags, Pageable pageable) {
         List<String> tags = new ArrayList<>();
-        for (int i = 0; i < requestTags.getTag().size(); i++) {
-            String tag = requestTags.getTag().get(i);
+        for (int i = 0; i < requestTags.getTags().size(); i++) {
+            String tag = requestTags.getTags().get(i);
             tags.add(tag);
         }
         List<Tag> findTags = tagRepository.searchTagInTeam(tags);
