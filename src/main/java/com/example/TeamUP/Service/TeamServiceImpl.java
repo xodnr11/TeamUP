@@ -406,6 +406,13 @@ public class TeamServiceImpl implements TeamService{
         List<Tag> findTags = tagRepository.searchTagInTeam(tags);
         List<Long> teamIds = new ArrayList<>();
 
+        ResponseTagsInTeam responseTagsInTeam = getTagsInTeam(pageable, findTags, teamIds);
+
+        if (responseTagsInTeam != null) return responseTagsInTeam;
+        return null;
+    }
+
+    private ResponseTagsInTeam getTagsInTeam(Pageable pageable, List<Tag> findTags, List<Long> teamIds) {
         if (findTags != null) {
             for (Tag findTag : findTags) {
                 teamIds.add(findTag.getTeam().getId());

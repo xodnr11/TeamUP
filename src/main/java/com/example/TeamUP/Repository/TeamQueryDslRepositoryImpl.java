@@ -21,7 +21,7 @@ public class TeamQueryDslRepositoryImpl implements TeamQueryDslRepository {
     }
 
     /**
-     * 들어온 태그들을 한번에 검색
+     * 들어온 팀아이디들을 한번에 검색
      */
     @Override
     public Page<Team> searchTeams(List<Long> teamIds, Pageable pageable) {
