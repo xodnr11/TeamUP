@@ -33,7 +33,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String username = principalDetails.getUserInfo().getUsername();
         log.info("데이터 베이스 담기 전 유저 정보 : " + principalDetails.getUserInfo().getNickname());
         UserInfo userInfo = userRepository.findByUsername(username);                        //최초 로그인이 아닐 시 여기서 우리 데이터베이스의 값이 나옴
-        log.info("유저인포 확인 : " + userInfo.toString());
+//        log.info("유저인포 확인 : " + userInfo.toString());
 
         if (userInfo == null) {
             userRepository.save(principalDetails.getUserInfo());                            // 최초 로그인이라면 회원가입 처리를 한다.
