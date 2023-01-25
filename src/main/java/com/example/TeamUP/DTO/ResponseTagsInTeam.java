@@ -24,7 +24,6 @@ public class ResponseTagsInTeam {
             this.posts.add(posts);
         }
 
-
     }
     @Data
     public static class Posts {

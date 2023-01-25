@@ -4,7 +4,6 @@ import com.example.TeamUP.Auth.PrincipalDetails;
 import com.example.TeamUP.Entity.UserInfo;
 import com.example.TeamUP.Repository.UserRepository;
 import com.example.TeamUP.Service.TokenServiceImpl;
-import com.example.TeamUP.exception.CustomException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.ErrorObject;
 import org.springframework.http.HttpStatus;
@@ -20,8 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.NoSuchFileException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
