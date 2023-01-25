@@ -1,5 +1,6 @@
 package com.example.TeamUP.Repository.read;
 
+import com.example.TeamUP.DTO.TeamUserInfoMapping;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Repository.TeamQueryDslRepository;
 import org.springframework.data.domain.Page;
@@ -22,5 +23,7 @@ public interface TeamReadRepository extends JpaRepository<Team, Long>, TeamQuery
     Page<Team> findByCategory(Pageable pageable, String category);
 
     Team findByTitleContains(String title);
-
+//
+//    @EntityGraph(attributePaths = {"userInfo"})
+//    TeamUserInfoMapping findByTitle(Long teamId);
 }
