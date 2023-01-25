@@ -3,7 +3,7 @@ package com.example.TeamUp.Repository;
 import com.example.TeamUP.Entity.Tag;
 import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Repository.TagRepository;
-import com.example.TeamUP.Repository.TeamRepository;
+import com.example.TeamUP.Repository.read.TeamReadRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +24,7 @@ class TagQueryDslRepositoryImplTest {
     @Autowired
     TagRepository tagRepository;
     @Autowired
-    TeamRepository teamRepository;
+    TeamReadRepository teamRepository;
 
     @Test
     @Rollback(value = false)
@@ -41,13 +41,13 @@ class TagQueryDslRepositoryImplTest {
         Pageable pageable = PageRequest.of(0, 10, sort);
         if (findTags != null) {
             for (Tag findTag : findTags) {
-                System.out.println("findTag = " + findTag.getTeam().getId());
+//                System.out.println("findTag = " + findTag.getTeam().getId());
                 teamIds.add(findTag.getTeam().getId());
             }
             Page<Team> findTeams = teamRepository.searchTeams(teamIds, pageable);
             if (findTeams != null) {
                 for (Team findTeam : findTeams) {
-                    System.out.println("findTeam = " + findTeam.getTeamName());
+//                    System.out.println("findTeam = " + findTeam.getTeamName());
                 }
                 System.out.println("findTeams.getTotalPages() = " + findTeams.getTotalPages());
             }

@@ -1,9 +1,8 @@
 package com.example.TeamUp.Service;
 
 import com.example.TeamUP.DTO.RequestCreateTeamDTO;
-import com.example.TeamUP.Entity.Team;
 import com.example.TeamUP.Entity.UserInfo;
-import com.example.TeamUP.Repository.TeamRepository;
+import com.example.TeamUP.Repository.read.TeamReadRepository;
 import com.example.TeamUP.Repository.UserRepository;
 import com.example.TeamUP.Service.TeamService;
 import com.example.TeamUP.Service.UserService;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -28,7 +26,7 @@ class UserServiceImplTest {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    TeamRepository teamRepository;
+    TeamReadRepository teamRepository;
 
     @Autowired
     EntityManager em;

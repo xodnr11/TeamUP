@@ -4,6 +4,7 @@ import com.example.TeamUP.DTO.*;
 import com.example.TeamUP.Entity.*;
 import com.example.TeamUP.Entity.Calendar;
 import com.example.TeamUP.Repository.*;
+import com.example.TeamUP.Repository.read.TeamReadRepository;
 import com.example.TeamUP.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService{
 
-    private final TeamRepository teamRepository;
+    private final TeamReadRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;

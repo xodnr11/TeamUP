@@ -1,15 +1,15 @@
-package com.example.TeamUP.Repository;
+package com.example.TeamUP.Repository.read;
 
 import com.example.TeamUP.Entity.Team;
+import com.example.TeamUP.Repository.TeamQueryDslRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface TeamRepository extends JpaRepository<Team, Long>, TeamQueryDslRepository {
+public interface TeamReadRepository extends JpaRepository<Team, Long>, TeamQueryDslRepository {
     @EntityGraph(attributePaths = {"userInfo"}, type = EntityGraph.EntityGraphType.LOAD)
 //    @Query(value = "select t from Team t join fetch t.userInfo")
     Optional<Team> findById(Long teamId);
